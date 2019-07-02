@@ -17,7 +17,7 @@ export function spotifyAuthLink() {
 export function auth() {
   return {
     uid: cookies('uidStatsfy'),
-    logout: () => cookies({ uidStatsfy: null }),
+    signOut: () => cookies({ uidStatsfy: null }),
   };
 }
 

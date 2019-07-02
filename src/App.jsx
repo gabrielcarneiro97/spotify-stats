@@ -26,10 +26,9 @@ function App() {
           <Navbar />
         </Header>
         <Switch>
-          <PrivateRoute exact path="/" component={Main} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/code" component={GetCode} />
-          {/* <Route path="/app" component={MainLogged} /> */}
+          <PrivateRoute exact path="/" component={Main} />
         </Switch>
       </Layout>
     </BrowserRouter>

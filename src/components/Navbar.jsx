@@ -7,8 +7,19 @@ import { withRouter } from 'react-router-dom';
 import { Row, Col, Icon } from 'antd';
 import PropTypes from 'prop-types';
 
-function Navbar() {
-  const handleClick = () => console.log('click');
+import { auth } from '../services/auth.service';
+
+function Navbar(props) {
+  const icon = auth().uid ? 'logout' : 'login';
+
+  const handleClick = () => {
+    if (auth().uid) {
+      auth().signOut();
+      props.history.push('/login');
+    } else {
+      props.history.push('/login');
+    }
+  };
 
   return (
     <Row style={{ color: '#FFF' }}>
@@ -20,7 +31,7 @@ function Navbar() {
       </Col>
       <Col span={12} style={{ textAlign: 'right' }}>
         <a className="login-btn" onClick={handleClick}>
-          <Icon type="login" />
+          <Icon type={icon} />
         </a>
       </Col>
     </Row>
