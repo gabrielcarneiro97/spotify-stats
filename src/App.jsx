@@ -1,65 +1,39 @@
-import React, { Component, Fragment } from 'react';
-import { Row, Col, Button } from 'antd';
+import React from 'react';
+import { Layout } from 'antd';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import moment from 'moment';
 
-import { spotify } from './private';
+import 'moment/locale/pt-br';
+import 'antd/dist/antd.css';
 
-import './App.css';
+import {
+  Login,
+  Navbar,
+  Main,
+  GetCode,
+  PrivateRoute,
+} from './components';
 
+const { Header } = Layout;
 
-function spotifyAuthLink() {
-  const base = 'https://accounts.spotify.com/authorize?';
-  const clientId = `client_id=${encodeURI(spotify.clientId)}`;
-  const responseType = '&response_type=code';
-  const redirectUri = `&redirect_uri=${encodeURI('http://localhost:3000/')}`;
-  const scope = `&scope=${encodeURI('user-library-read')}`;
+moment.locale('pt-br');
 
-  return base + clientId + responseType + redirectUri + scope;
+function App() {
+  return (
+    <BrowserRouter>
+      <Layout>
+        <Header>
+          <Navbar />
+        </Header>
+        <Switch>
+          <PrivateRoute exact path="/" component={Main} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/code" component={GetCode} />
+          {/* <Route path="/app" component={MainLogged} /> */}
+        </Switch>
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
-function spotifyApiTokenLink() {
-  
-}
-
-class App extends Component {
-  componentWillMount() {
-    console.log('willMount');
-    const locale = new URL(window.location.href);
-
-    this.setState({
-      code: locale.searchParams.get('code'),
-    });
-  }
-
-  login = async () => {
-    window.location.href = spotifyAuthLink();
-    this.setState({});
-  }
-
-  isAuth = () => {
-    const { code } = this.state;
-    return !!code;
-  }
-
-  render() {
-    if (!this.isAuth()) {
-      return (
-        <div>
-          <Row>
-            <Col span={12} style={{ backgroundColor: 'blue' }}>
-              <Button onClick={this.login}>Spotify</Button>
-            </Col>
-          </Row>
-        </div>
-      );
-    }
-
-    return (
-      <Fragment>
-        <div>
-          LOGADO!!
-        </div>
-      </Fragment>
-    );
-  }
-}
 export default App;
