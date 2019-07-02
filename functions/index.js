@@ -64,26 +64,26 @@ async function spotifyGet(url, { access_token: at }) {
   }
 }
 
-async function getDBTokens(userId) {
+async function getDBTokens(uid) {
   try {
-    const tokens = (await tokensCol.doc(userId).get()).data();
+    const tokens = (await tokensCol.doc(uid).get()).data();
     return tokens;
   } catch (err) {
     throw err;
   }
 }
 
-async function saveDBTokens(userId, data) {
+async function saveDBTokens(uid, data) {
   try {
-    await tokensCol.doc(userId).set(data);
+    await tokensCol.doc(uid).set(data);
     return data;
   } catch (err) {
     throw err;
   }
 }
 
-async function checkRefresh(userId) {
-  const tokens = await getDBTokens(userId);
+async function checkRefresh(uid) {
+  const tokens = await getDBTokens(uid);
   const date = new Date(tokens.date);
   if (date <= new Date()) {
     try {
@@ -94,7 +94,7 @@ async function checkRefresh(userId) {
         ...news,
       };
 
-      return saveDBTokens(userId, newsTokens);
+      return saveDBTokens(uid, newsTokens);
     } catch (err) {
       throw err;
     }
@@ -113,9 +113,9 @@ async function getApiUser(tokens) {
 
 exports.getUser = functions.https.onRequest(async (req, res) => {
   cors(res);
-  const { userId } = req.query;
+  const { uid } = req.query;
   try {
-    const tokens = await checkRefresh(userId);
+    const tokens = await checkRefresh(uid);
     const user = await getApiUser(tokens);
     res.send(user);
   } catch (err) {

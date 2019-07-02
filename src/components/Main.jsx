@@ -1,8 +1,13 @@
 import React from 'react';
 
+import UserInfos from './UserInfos';
+
 function Main() {
   return (
-    <div>Main</div>
+    <div>
+      Main
+      <UserInfos />
+    </div>
   );
 }
 
