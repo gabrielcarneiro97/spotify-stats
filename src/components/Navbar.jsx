@@ -7,7 +7,8 @@ import {
   Button,
 } from 'antd';
 import PropTypes from 'prop-types';
-
+ 
+import { version } from '../../package.json';
 import { auth } from '../services/auth.service';
 
 function Navbar(props) {
@@ -29,8 +30,8 @@ function Navbar(props) {
     <Row style={{ color: '#FFF' }}>
       <Col span={12}>
         <Button type="link" style={{ color: '#FFF' }} onClick={handleLogoClick}>
-          <span style={{ fontWeight: 'bolder' }}>STATSFY </span>
-          {/* <span style={{ fontWeight: 'lighter' }}>{version}</span> */}
+          <span style={{ fontWeight: 'bolder' }}>STATSFY&nbsp;</span>
+          <span style={{ fontWeight: 'lighter' }}>{version}</span>
         </Button>
       </Col>
       <Col span={12} style={{ textAlign: 'right' }}>

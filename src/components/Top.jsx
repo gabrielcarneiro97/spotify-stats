@@ -46,7 +46,7 @@ function setData(data) {
 
 class Top extends Component {
   static propTypes = {
-    history: PropTypes.array, // eslint-disable-line
+    history: PropTypes.object, // eslint-disable-line
   }
 
   state = {
@@ -76,7 +76,7 @@ class Top extends Component {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="Top 20 - Artists" extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>} loading={loading}>
+          <Card title="Top 20 - Artists" extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>} loading={loading}>
             <div style={{ height: '50vh' }}>
               <TopChart data={artistData} />
             </div>

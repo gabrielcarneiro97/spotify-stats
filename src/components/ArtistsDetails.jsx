@@ -3,13 +3,13 @@ import { Col, Row, Layout } from 'antd';
 
 import { getTop } from '../services/api.service';
 
-import TrackList from './TrackList';
+import ArtistList from './ArtistList';
 
 
 const { Content } = Layout;
 
 
-function trackSort(type) {
+function artistsSort(type) {
   return (a, b) => {
     if (a.pos[type] < b.pos[type]) return -1;
     if (a.pos[type] > b.pos[type]) return 1;
@@ -18,38 +18,37 @@ function trackSort(type) {
 }
 
 
-function filterTracks(tracks) {
+function filterArtists(artists) {
   const long = [];
   const medium = [];
   const short = [];
 
-  Object.keys(tracks).forEach((k) => {
-    const track = tracks[k];
-    const { pos } = track;
+  Object.keys(artists).forEach((k) => {
+    const artist = artists[k];
+    const { pos } = artist;
 
-    if (pos.long) long.push(track);
-    if (pos.medium) medium.push(track);
-    if (pos.short) short.push(track);
+    if (pos.long) long.push(artist);
+    if (pos.medium) medium.push(artist);
+    if (pos.short) short.push(artist);
   });
 
-  long.sort(trackSort('long'));
-  medium.sort(trackSort('medium'));
-  short.sort(trackSort('short'));
-
+  long.sort(artistsSort('long'));
+  medium.sort(artistsSort('medium'));
+  short.sort(artistsSort('short'));
 
   return { long, medium, short };
 }
 
 
-class TracksDetails extends Component {
+class ArtistsDetails extends Component {
   state = {
     loading: true,
   }
 
   async componentWillMount() {
-    const { tracks } = await getTop();
+    const { artists } = await getTop();
 
-    const { long, medium, short } = filterTracks(tracks);
+    const { long, medium, short } = filterArtists(artists);
 
     this.setState({
       long,
@@ -71,13 +70,13 @@ class TracksDetails extends Component {
       <Content style={{ minHeight: '92vh' }}>
         <Row type="flex" gutter={5} style={{ margin: 10 }}>
           <Col xs={24} xl={8}>
-            <TrackList tracks={short} type="short" title="Last Month" loading={loading} />
+            <ArtistList artists={short} type="short" title="Last Month" loading={loading} />
           </Col>
           <Col xs={24} xl={8}>
-            <TrackList tracks={medium} type="medium" title="Last 6 Months" loading={loading} />
+            <ArtistList artists={medium} type="medium" title="Last 6 Months" loading={loading} />
           </Col>
           <Col xs={24} xl={8}>
-            <TrackList tracks={long} type="long" title="Always" loading={loading} />
+            <ArtistList artists={long} type="long" title="Always" loading={loading} />
           </Col>
         </Row>
       </Content>
@@ -85,4 +84,4 @@ class TracksDetails extends Component {
   }
 }
 
-export default TracksDetails;
+export default ArtistsDetails;

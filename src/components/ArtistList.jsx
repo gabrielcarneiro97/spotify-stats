@@ -7,33 +7,38 @@ import {
   Card,
 } from 'antd';
 
-import Player from './Player';
 
 const linkClick = link => () => window.open(link, '_blank');
 
-function TrackList(props) {
+function ArtistList(props) {
   const {
-    tracks,
+    artists,
     type,
     title,
     loading,
   } = props;
+
+  console.log(artists);
   return (
     <Card title={title} loading={loading}>
       <List
         itemLayout="vertical"
         size="small"
-        dataSource={tracks}
+        dataSource={artists}
         footer={(
           <div>
             <b>STATSFY</b>
           </div>
         )}
-        renderItem={(track, i) => (
+        renderItem={(artist, i) => (
           <List.Item
-            key={`${track.id}-${type}`}
+            key={`${artist.id}-${type}`}
             extra={(
-              <Player songUrl={track.preview} imgUrl={track.album.cover} />
+              <img
+                src={artist.image}
+                alt="cover"
+                width="64px"
+              />
             )}
           >
             <List.Item.Meta
@@ -43,8 +48,8 @@ function TrackList(props) {
                   .
                 </Avatar>
               )}
-              title={<Button type="link" onClick={linkClick(track.spotifyLink)} style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>{track.name}</Button>}
-              description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{track.artist.name}</Button>}
+              title={<Button type="link" onClick={linkClick(artist.spotifyLink)} style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>{artist.name}</Button>}
+              // description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{track.artist.name}</Button>}
             />
           </List.Item>
         )}
@@ -53,11 +58,11 @@ function TrackList(props) {
   );
 }
 
-TrackList.propTypes = {
-  tracks: PropTypes.array, //eslint-disable-line
+ArtistList.propTypes = {
+  artists: PropTypes.array, //eslint-disable-line
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 
-export default TrackList;
+export default ArtistList;
