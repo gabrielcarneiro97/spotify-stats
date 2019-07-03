@@ -12,7 +12,7 @@ class GetCode extends Component {
     const url = new URL(window.location.href);
     const code = url.searchParams.get('code');
 
-    const { data: user } = await login(code);
+    const user = await login(code);
 
     console.log(user);
 

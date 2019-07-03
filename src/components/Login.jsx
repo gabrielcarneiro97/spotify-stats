@@ -11,13 +11,11 @@ const { Content } = Layout;
 
 function Login(props) {
   const { location, history } = props;
-  const { from } = location.state || { from: { pathname: '/app' } };
+  const { from } = location.state || { from: { pathname: '/' } };
 
-  // if (auth.currentUser !== null) {
-  //   return <Redirect to={from} />;
-  // }
-
-  console.log(auth());
+  if (auth().uid) {
+    return <Redirect to={from} />;
+  }
 
   return (
     <Content style={{ minHeight: '92vh' }}>

@@ -1,6 +1,7 @@
-.login-form-forgot {
-  float: right;
+.login-form {
+  padding-top: 35vh;
 }
+
 .login-form-button {
   width: 100%;
 }

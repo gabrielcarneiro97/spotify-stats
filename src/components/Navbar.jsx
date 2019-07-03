@@ -14,8 +14,7 @@ function Navbar(props) {
 
   const handleClick = () => {
     if (auth().uid) {
-      auth().signOut();
-      props.history.push('/login');
+      auth().signOut(props.history);
     } else {
       props.history.push('/login');
     }

@@ -5,6 +5,9 @@ import {
   Button,
 } from 'antd';
 import propTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 
 import { spotifyRedirect } from '../services/auth.service';
 
@@ -12,6 +15,7 @@ import { spotifyRedirect } from '../services/auth.service';
 import './LoginForm.css';
 
 const FormItem = Form.Item;
+
 
 class LoginForm extends Component {
   static propTypes = {
@@ -26,8 +30,6 @@ class LoginForm extends Component {
   }
 
   handleSpotify = () => {
-    // const { props } = this;
-    // const { from } = props.history.location.state || { from: { pathname: '/app' } };
     spotifyRedirect();
   };
 
@@ -35,9 +37,11 @@ class LoginForm extends Component {
     return (
       <Form className="login-form">
         <FormItem className="center-text">
-          <Button className="login-form-button" onClick={this.handleSpotify}>
-            <Icon type="spotify" />
-            Entrar com Spotify
+          <Button size="large" className="login-form-button" onClick={this.handleSpotify}>
+            <FontAwesomeIcon icon={faSpotify} />
+            <span style={{ marginLeft: 5 }}>
+              Entrar com Spotify
+            </span>
           </Button>
         </FormItem>
       </Form>

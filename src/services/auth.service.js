@@ -17,7 +17,10 @@ export function spotifyAuthLink() {
 export function auth() {
   return {
     uid: cookies('uidStatsfy'),
-    signOut: () => cookies({ uidStatsfy: null }),
+    signOut: (history) => {
+      cookies({ uidStatsfy: null });
+      if (history) history.push('/login');
+    },
   };
 }
 
