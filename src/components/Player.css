@@ -1,0 +1,30 @@
+#container {
+  position: relative;
+  width: 64px;
+}
+
+#container:hover {
+  cursor: pointer;
+}
+
+#container:hover #overlay  {
+  opacity: 0.7;
+}
+
+#container:hover #cover {
+  opacity: 0.4;
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  transition: .5s ease;
+}
+
+#cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: .5s ease;
+}

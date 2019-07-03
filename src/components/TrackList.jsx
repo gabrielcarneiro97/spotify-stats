@@ -7,6 +7,8 @@ import {
   Card,
 } from 'antd';
 
+import Player from './Player';
+
 const linkClick = link => () => window.open(link, '_blank');
 
 function TrackList(props) {
@@ -32,11 +34,7 @@ function TrackList(props) {
           <List.Item
             key={`${track.id}-${type}`}
             extra={(
-              <img
-                width={64}
-                alt="cover"
-                src={track.album.cover}
-              />
+              <Player songUrl={track.preview} imgUrl={track.album.cover} />
             )}
           >
             <List.Item.Meta
