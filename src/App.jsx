@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import moment from 'moment';
 
 import 'moment/locale/pt-br';
@@ -12,9 +12,10 @@ import {
   Main,
   GetCode,
   PrivateRoute,
+  TracksDetails,
 } from './components';
 
-const { Header } = Layout;
+const { Header, Footer } = Layout;
 
 moment.locale('pt-br');
 
@@ -29,7 +30,9 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/code" component={GetCode} />
           <PrivateRoute exact path="/" component={Main} />
+          <PrivateRoute exact path="/tracks" component={TracksDetails} />
         </Switch>
+        <Footer style={{ textAlign: 'center', backgroundColor: '#001529', color: '#FFF' }}>STATSFY ©2019 Created by Gabriel Carneiro</Footer>
       </Layout>
     </BrowserRouter>
   );

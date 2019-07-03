@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { Card, Col } from 'antd';
+import { Card, Col, Button } from 'antd';
+import { withRouter } from 'react-router-dom';
+import { PropTypes } from 'prop-types';
+
 import { getTop } from '../services/api.service';
 
 import TopChart from './TopChart';
@@ -42,6 +45,10 @@ function setData(data) {
 }
 
 class Top extends Component {
+  static propTypes = {
+    history: PropTypes.array, // eslint-disable-line
+  }
+
   state = {
     loading: true,
   }
@@ -58,17 +65,18 @@ class Top extends Component {
 
   render() {
     const { loading, trackData, artistData } = this.state;
+    const { history } = this.props;
     return (
       <Fragment>
         <Col xs={24} lg={12}>
-          <Card title="Music Top 20" loading={loading}>
+          <Card title="Top 20 - Tracks" extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>} loading={loading}>
             <div style={{ height: '50vh' }}>
               <TopChart data={trackData} />
             </div>
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="Artist Top 20" loading={loading}>
+          <Card title="Top 20 - Artists" extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>} loading={loading}>
             <div style={{ height: '50vh' }}>
               <TopChart data={artistData} />
             </div>
@@ -79,4 +87,4 @@ class Top extends Component {
   }
 }
 
-export default Top;
+export default withRouter(Top);

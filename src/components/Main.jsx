@@ -8,18 +8,16 @@ const { Content } = Layout;
 
 function Main() {
   return (
-    <div>
-      <Content style={{ minHeight: '92vh' }}>
-        <Row type="flex" style={{ margin: 10 }}>
-          <Col xs={24}>
-            <UserInfos />
-          </Col>
-        </Row>
-        <Row style={{ margin: 5 }} gutter={10}>
-          <Top />
-        </Row>
-      </Content>
-    </div>
+    <Content style={{ minHeight: '92vh' }}>
+      <Row type="flex" style={{ margin: 10 }}>
+        <Col xs={24}>
+          <UserInfos />
+        </Col>
+      </Row>
+      <Row style={{ margin: 5 }} gutter={10}>
+        <Top />
+      </Row>
+    </Content>
   );
 }
 

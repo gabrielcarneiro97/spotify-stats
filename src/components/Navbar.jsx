@@ -1,10 +1,11 @@
-/* eslint jsx-a11y/anchor-is-valid: 0 */
-/* eslint jsx-a11y/click-events-have-key-events: 0 */
-/* eslint jsx-a11y/no-static-element-interactions: 0 */
-
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Row, Col, Icon } from 'antd';
+import {
+  Row,
+  Col,
+  Icon,
+  Button,
+} from 'antd';
 import PropTypes from 'prop-types';
 
 import { auth } from '../services/auth.service';
@@ -12,7 +13,11 @@ import { auth } from '../services/auth.service';
 function Navbar(props) {
   const icon = auth().uid ? 'logout' : 'login';
 
-  const handleClick = () => {
+  const handleLogoClick = () => {
+    props.history.push('/');
+  };
+
+  const handleLoginBtn = () => {
     if (auth().uid) {
       auth().signOut(props.history);
     } else {
@@ -23,15 +28,15 @@ function Navbar(props) {
   return (
     <Row style={{ color: '#FFF' }}>
       <Col span={12}>
-        <a style={{ color: '#FFF' }}>
+        <Button type="link" style={{ color: '#FFF' }} onClick={handleLogoClick}>
           <span style={{ fontWeight: 'bolder' }}>STATSFY </span>
           {/* <span style={{ fontWeight: 'lighter' }}>{version}</span> */}
-        </a>
+        </Button>
       </Col>
       <Col span={12} style={{ textAlign: 'right' }}>
-        <a className="login-btn" onClick={handleClick}>
+        <Button type="link" style={{ color: '#FFF' }} onClick={handleLoginBtn}>
           <Icon type={icon} />
-        </a>
+        </Button>
       </Col>
     </Row>
   );

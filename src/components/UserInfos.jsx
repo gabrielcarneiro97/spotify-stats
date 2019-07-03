@@ -26,8 +26,7 @@ class UserInfos extends Component {
   }
 
   async componentWillMount() {
-    const { props } = this;
-    const { history } = props;
+    const { history } = this.props;
     try {
       const user = await getUser();
       console.log(user);
@@ -39,8 +38,7 @@ class UserInfos extends Component {
   }
 
   render() {
-    const { state } = this;
-    const { loading, user } = state;
+    const { loading, user } = this.state;
 
     const displayName = user.display_name;
     const { country, email } = user;
