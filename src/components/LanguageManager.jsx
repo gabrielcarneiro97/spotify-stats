@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
+import cookies from 'cookiesjs';
 
 import Flag from './Flag';
 
@@ -11,10 +12,13 @@ export const LanguageConsumer = LanguageContext.Consumer;
 
 export class LanguageProvider extends React.Component {
   state = {
-    language: 'pt',
+    language: cookies('statsfyLang'),
   };
 
-  updateLanguage = value => this.setState({ language: value });
+  updateLanguage = (value) => {
+    cookies({ statsfyLang: value });
+    this.setState({ language: value });
+  };
 
   render() {
     return (
@@ -30,24 +34,27 @@ export class LanguageProvider extends React.Component {
   }
 }
 
-export const LanguageSelect = () => (
-  <LanguageConsumer>
-    {({ updateLanguage }) => (
-      <Select size="small" defaultValue="pt" onChange={updateLanguage} style={{ width: 100 }}>
-        <Option value="pt">
-          <Flag country="BR" />
-          &nbsp;
-          PT-BR
-        </Option>
-        <Option value="en">
-          <Flag country="US" />
-          &nbsp;
-          EN-US
-        </Option>
-      </Select>
-    )}
-  </LanguageConsumer>
-);
+export const LanguageSelect = () => {
+  const cookiesLang = cookies('statsfyLang') || 'pt';
+  return (
+    <LanguageConsumer>
+      {({ updateLanguage }) => (
+        <Select size="small" defaultValue={cookiesLang} onChange={updateLanguage} style={{ width: 100 }}>
+          <Option value="pt">
+            <Flag country="BR" />
+            &nbsp;
+            PT-BR
+          </Option>
+          <Option value="en">
+            <Flag country="US" />
+            &nbsp;
+            EN-US
+          </Option>
+        </Select>
+      )}
+    </LanguageConsumer>
+  );
+};
 
 export const Text = props => (
   <LanguageConsumer>{({ language }) => props.dicio[language]}</LanguageConsumer>

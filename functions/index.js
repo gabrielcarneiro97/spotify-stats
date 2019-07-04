@@ -156,6 +156,16 @@ async function getApiTopArtists(tokens) {
 }
 
 function extractTrackData(track) {
+  const cover = (() => {
+    if (track.album.images) {
+      if (track.album.images[0]) {
+        if (track.album.images[0].url) return track.album.images[0].url;
+        return null;
+      }
+      return null;
+    }
+    return null;
+  })();
   return {
     id: track.id,
     name: track.name,
@@ -171,7 +181,7 @@ function extractTrackData(track) {
       name: track.album.name,
       spotifyLink: track.album.external_urls.spotify,
       releaseDate: track.album.release_date,
-      cover: track.album.images ? track.album.images[0].url : null,
+      cover,
     },
     pos: {
       long: null,

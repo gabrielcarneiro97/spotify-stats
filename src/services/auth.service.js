@@ -20,7 +20,6 @@ export function auth() {
 
 export async function spotifyRedirect() {
   const link = await spotifyAuthLink();
-  console.log(link);
   window.location.href = link;
 }
 
