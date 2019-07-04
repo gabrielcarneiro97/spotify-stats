@@ -93,7 +93,7 @@ class TracksDetails extends Component {
               title={(
                 <Text dicio={{
                   en: 'Last 6 Months',
-                  pt: 'Últimos 6 Mês',
+                  pt: 'Últimos 6 Meses',
                 }}
                 />
               )}
