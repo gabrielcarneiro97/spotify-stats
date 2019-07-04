@@ -9,6 +9,8 @@ import {
 
 import Player from './Player';
 
+import { maxLength } from '../services/string.service';
+
 const linkClick = link => () => window.open(link, '_blank');
 
 class TrackList extends Component {
@@ -87,10 +89,10 @@ class TrackList extends Component {
                     onClick={linkClick(track.spotifyLink)}
                     style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
                   >
-                    {track.name}
+                    {maxLength(track.name, 21)}
                   </Button>
                 )}
-                description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{track.artist.name}</Button>}
+                description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{maxLength(track.artist.name)}</Button>}
               />
             </List.Item>
           )}

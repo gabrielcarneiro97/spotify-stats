@@ -7,6 +7,7 @@ import {
   Card,
 } from 'antd';
 
+import { maxLength } from '../services/string.service';
 
 const linkClick = link => () => window.open(link, '_blank');
 
@@ -48,7 +49,7 @@ function ArtistList(props) {
                   .
                 </Avatar>
               )}
-              title={<Button type="link" onClick={linkClick(artist.spotifyLink)} style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>{artist.name}</Button>}
+              title={<Button type="link" onClick={linkClick(artist.spotifyLink)} style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>{maxLength(artist.name, 21)}</Button>}
               // description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{track.artist.name}</Button>}
             />
           </List.Item>
