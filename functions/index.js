@@ -246,9 +246,9 @@ exports.getRecs = functions.https.onRequest(async (req, res) => {
     const artists = await getApiTopArtists(tokens);
     const tracks = await getApiTopTracks(tokens);
 
-    const longMatches = [1, 7, 17];
-    const mediumMatches = [4, 8, 16];
-    const shortMatches = [1, 3, 12, 15];
+    const longMatches = [1, 3, 7, 17];
+    const mediumMatches = [4, 8, 10, 16];
+    const shortMatches = [1, 3, 12, 15, 18];
 
     const topArtistsId = Object.keys(artists).filter((key) => {
       const artist = artists[key];

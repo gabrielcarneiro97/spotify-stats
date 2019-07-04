@@ -26,7 +26,7 @@
   },
   "scripts": {
     "emul": "firebase emulators:start --only functions,firestore",
-    "depoly": "firebase deploy --only functions,firestore",
+    "deploy": "firebase deploy --only functions,hosting,firestore",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
