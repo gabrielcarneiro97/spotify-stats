@@ -30,6 +30,15 @@ class TrackList extends Component {
     playingNow: null,
   };
 
+  stopMusic = () => {
+    const { playingNow } = this.state;
+    if (playingNow) {
+      playingNow.setState({ playing: false }, () => {
+        this.setState({ playingNow: null });
+      });
+    }
+  }
+
   handlePlay = (player) => {
     const { playingNow } = this.state;
     if (playingNow) {
@@ -63,7 +72,10 @@ class TrackList extends Component {
       <Card title={title} loading={loading}>
         <List
           size="small"
-          pagination={pagination}
+          pagination={{
+            onChange: this.stopMusic,
+            ...pagination,
+          }}
           dataSource={tracks}
           footer={(
             <div>

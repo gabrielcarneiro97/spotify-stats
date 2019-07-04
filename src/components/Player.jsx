@@ -63,12 +63,14 @@ class Player extends Component {
               <Icon
                 type="pause-circle"
                 className="overlay"
+                style={{ color: 'rgba(0, 0, 0, 0.85)' }}
               />
             )
             : (
               <Icon
                 type="play-circle"
                 className="overlay"
+                style={{ color: 'rgba(0, 0, 0, 0.85)' }}
               />
             )
         ))()}
