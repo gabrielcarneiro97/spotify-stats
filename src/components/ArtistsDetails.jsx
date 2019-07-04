@@ -70,13 +70,31 @@ class ArtistsDetails extends Component {
       <Content style={{ minHeight: '92vh' }}>
         <Row type="flex" gutter={5} style={{ margin: 10 }}>
           <Col xs={24} xl={8}>
-            <ArtistList artists={short} type="short" title="Last Month" loading={loading} />
+            <ArtistList
+              artists={short}
+              pagination={{ pageSize: 5 }}
+              type="short"
+              title="Last Month"
+              loading={loading}
+            />
           </Col>
           <Col xs={24} xl={8}>
-            <ArtistList artists={medium} type="medium" title="Last 6 Months" loading={loading} />
+            <ArtistList
+              artists={medium}
+              pagination={{ pageSize: 5 }}
+              type="medium"
+              title="Last 6 Months"
+              loading={loading}
+            />
           </Col>
           <Col xs={24} xl={8}>
-            <ArtistList artists={long} type="long" title="Always" loading={loading} />
+            <ArtistList
+              artists={long}
+              pagination={{ pageSize: 5 }}
+              type="long"
+              title="Always"
+              loading={loading}
+            />
           </Col>
         </Row>
       </Content>

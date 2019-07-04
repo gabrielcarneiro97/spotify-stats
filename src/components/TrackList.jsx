@@ -68,14 +68,16 @@ class TrackList extends Component {
       loading,
       pagination,
     } = this.props;
+
+    const pag = pagination === null ? null : {
+      onChange: this.stopMusic,
+      ...pagination,
+    };
     return (
       <Card title={title} loading={loading}>
         <List
           size="small"
-          pagination={{
-            onChange: this.stopMusic,
-            ...pagination,
-          }}
+          pagination={pag}
           dataSource={tracks}
           footer={(
             <div>

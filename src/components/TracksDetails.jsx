@@ -71,13 +71,31 @@ class TracksDetails extends Component {
       <Content style={{ minHeight: '92vh' }}>
         <Row type="flex" gutter={5} style={{ margin: 10 }}>
           <Col xs={24} xl={8}>
-            <TrackList tracks={short} type="short" title="Last Month" loading={loading} />
+            <TrackList
+              pagination={{ pageSize: 5 }}
+              tracks={short}
+              type="short"
+              title="Last Month"
+              loading={loading}
+            />
           </Col>
           <Col xs={24} xl={8}>
-            <TrackList tracks={medium} type="medium" title="Last 6 Months" loading={loading} />
+            <TrackList
+              pagination={{ pageSize: 5 }}
+              tracks={medium}
+              type="medium"
+              title="Last 6 Months"
+              loading={loading}
+            />
           </Col>
           <Col xs={24} xl={8}>
-            <TrackList tracks={long} type="long" title="Always" loading={loading} />
+            <TrackList
+              pagination={{ pageSize: 5 }}
+              tracks={long}
+              type="long"
+              title="Always"
+              loading={loading}
+            />
           </Col>
         </Row>
       </Content>

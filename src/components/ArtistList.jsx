@@ -17,14 +17,14 @@ function ArtistList(props) {
     type,
     title,
     loading,
+    pagination,
   } = props;
 
-  console.log(artists);
   return (
     <Card title={title} loading={loading}>
       <List
-        itemLayout="vertical"
         size="small"
+        pagination={pagination}
         dataSource={artists}
         footer={(
           <div>
@@ -49,8 +49,14 @@ function ArtistList(props) {
                   .
                 </Avatar>
               )}
-              title={<Button type="link" onClick={linkClick(artist.spotifyLink)} style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>{maxLength(artist.name, 21)}</Button>}
-              // description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{track.artist.name}</Button>}
+              title={(
+                <Button
+                  type="link"
+                  onClick={linkClick(artist.spotifyLink)}
+                  style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>
+                  {maxLength(artist.name, 21)}
+                </Button>
+              )}
             />
           </List.Item>
         )}
@@ -64,6 +70,11 @@ ArtistList.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
+  pagination: PropTypes.object // eslint-disable-line
+};
+
+ArtistList.defautProps = {
+  pagination: { pageSize: 10 },
 };
 
 export default ArtistList;
