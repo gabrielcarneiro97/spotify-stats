@@ -4,6 +4,7 @@ import { Icon } from 'antd';
 import ReactPlayer from 'react-player';
 
 import './Player.css';
+import defaultImg from '../assets/default-cover.png';
 
 class Player extends Component {
   static propTypes = {
@@ -30,12 +31,15 @@ class Player extends Component {
     const { imgUrl, songUrl } = this.props;
     const { playing } = this.state;
 
+    const img = imgUrl || defaultImg;
+
+
     if (!songUrl) {
       return (
         <img
           width={64}
           alt="cover"
-          src={imgUrl}
+          src={img}
         />
       );
     }
@@ -48,7 +52,7 @@ class Player extends Component {
         id="container"
       >
         <img
-          src={imgUrl}
+          src={img}
           alt="cover"
           width={64}
           id="cover"

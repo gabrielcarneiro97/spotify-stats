@@ -171,7 +171,7 @@ function extractTrackData(track) {
       name: track.album.name,
       spotifyLink: track.album.external_urls.spotify,
       releaseDate: track.album.release_date,
-      cover: track.album.images[0].url,
+      cover: track.album.images ? track.album.images[0].url : null,
     },
     pos: {
       long: null,
