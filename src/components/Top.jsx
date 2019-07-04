@@ -79,7 +79,16 @@ class Top extends Component {
                 }}
               />
             )}
-            extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>}
+            extra={(
+              <Button type="link" onClick={() => history.push('/tracks')}>
+                <Text
+                  dicio={{
+                    en: 'More Info',
+                    pt: 'Lista Detalhada',
+                  }}
+                />
+              </Button>
+            )}
             footer={(
               <div>
                 <b>STATSFY</b>
@@ -102,7 +111,16 @@ class Top extends Component {
                 }}
               />
             )}
-            extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>}
+            extra={(
+              <Button type="link" onClick={() => history.push('/artists')}>
+                <Text
+                  dicio={{
+                    en: 'More Info',
+                    pt: 'Lista Detalhada',
+                  }}
+                />
+              </Button>
+            )}
             footer={(
               <div>
                 <b>STATSFY</b>
