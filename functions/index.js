@@ -3,8 +3,9 @@ const admin = require('firebase-admin');
 const axios = require('axios');
 const qs = require('querystring');
 const { spotify } = require('./private');
+const { root } = require('./public');
 
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp(functions.config().firestore);
 
 const db = admin.firestore();
 
@@ -13,13 +14,6 @@ const tokensCol = db.collection('tokens');
 function cors(res) {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST');
-}
-
-function getError(data) {
-  return {
-    name: data.response.data.error,
-    desc: data.response.data.error_description,
-  };
 }
 
 async function token(type, code) {
@@ -45,8 +39,7 @@ async function token(type, code) {
       ...axiosRes.data,
       date: new Date(new Date().getTime() + 3600000).toISOString(),
     };
-  } catch (data) {
-    const err = getError(data);
+  } catch (err) {
     throw err;
   }
 }
