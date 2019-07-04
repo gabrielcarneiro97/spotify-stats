@@ -7,7 +7,9 @@ import {
   Button,
 } from 'antd';
 import PropTypes from 'prop-types';
- 
+
+import { LanguageSelect } from './LanguageManager';
+
 import { version } from '../../package.json';
 import { auth } from '../services/auth.service';
 
@@ -21,7 +23,6 @@ function Navbar(props) {
   const handleLoginBtn = () => {
     if (auth().uid) {
       auth().signOut(props.history);
-    } else {
       props.history.push('/login');
     }
   };
@@ -35,6 +36,7 @@ function Navbar(props) {
         </Button>
       </Col>
       <Col span={12} style={{ textAlign: 'right' }}>
+        <LanguageSelect />
         <Button type="link" style={{ color: '#FFF' }} onClick={handleLoginBtn}>
           <Icon type={icon} />
         </Button>

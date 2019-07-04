@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import Flag from './Flag';
 
-import { getUser, getRecs } from '../services/api.service';
+import { getUser } from '../services/api.service';
 import { auth } from '../services/auth.service';
 
 const { Meta } = Card;

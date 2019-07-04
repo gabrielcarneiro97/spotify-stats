@@ -5,10 +5,10 @@ import {
 } from 'antd';
 import propTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-
 import { spotifyRedirect } from '../services/auth.service';
+
+import { Text } from './LanguageManager';
 
 
 import './LoginForm.css';
@@ -39,7 +39,11 @@ class LoginForm extends Component {
           <Button size="large" className="login-form-button" onClick={this.handleSpotify}>
             <FontAwesomeIcon icon={faSpotify} />
             <span style={{ marginLeft: 5 }}>
-              Sign in with Spotify
+              <Text dicio={{
+                pt: 'Entrar com Spotify',
+                en: 'Sign In with Spotify',
+              }}
+              />
             </span>
           </Button>
         </FormItem>
