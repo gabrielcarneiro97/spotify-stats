@@ -7,6 +7,8 @@ import {
   Line,
 } from 'recharts';
 
+import { maxLength } from '../services/string.service';
+
 function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -27,7 +29,7 @@ function TopChart({ data }) {
         x, y, stroke, // eslint-disable-line
       } = props;
 
-      return <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">{musicName}</text>;
+      return <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">{maxLength(musicName, 21)}</text>;
     };
     return <Line label={<CustomizedLabel />} type="monotone" key={musicName} dataKey={musicName} stroke={getRandomColor()} />;
   });
@@ -38,8 +40,8 @@ function TopChart({ data }) {
         data={data}
         margin={{
           top: 20,
-          right: 100,
-          left: 100,
+          right: 55,
+          left: 55,
           bottom: 10,
         }}
       >

@@ -13,7 +13,7 @@ function reverseObj(objParam) {
   const objCount = objKeys.length - objKeys.filter(k => obj[k] === null).length;
 
   objKeys.forEach((k) => {
-    if (obj[k] !== null) obj[k] = objCount - (obj[k] - 1);
+    if (obj[k] !== null) obj[k] = objCount - (obj[k] - 1) || null;
   });
 
   return obj;
@@ -70,14 +70,14 @@ class Top extends Component {
       <Fragment>
         <Col xs={24} lg={12}>
           <Card title="Top 20 - Tracks" extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>} loading={loading}>
-            <div style={{ height: '50vh' }}>
+            <div style={{ height: '70vh' }}>
               <TopChart data={trackData} />
             </div>
           </Card>
         </Col>
         <Col xs={24} lg={12}>
           <Card title="Top 20 - Artists" extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>} loading={loading}>
-            <div style={{ height: '50vh' }}>
+            <div style={{ height: '70vh' }}>
               <TopChart data={artistData} />
             </div>
           </Card>
