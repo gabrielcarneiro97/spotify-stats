@@ -37,9 +37,9 @@ function setData(data) {
   dataMedium = reverseObj(dataMedium);
   dataShort = reverseObj(dataShort);
 
-  dataLong.xAxisChart = 'long';
-  dataMedium.xAxisChart = 'medium';
-  dataShort.xAxisChart = 'short';
+  dataLong.xAxisChart = 'Always';
+  dataMedium.xAxisChart = 'Last 6 Months';
+  dataShort.xAxisChart = 'Last Month';
 
   return [dataLong, dataMedium, dataShort];
 }

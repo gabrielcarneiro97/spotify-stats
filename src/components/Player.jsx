@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import ReactPlayer from 'react-player';
 
-import playPause from '../assets/play-pause.png';
 import './Player.css';
 
 class Player extends Component {
   static propTypes = {
+    changePlay: PropTypes.func,
     imgUrl: PropTypes.string.isRequired,
     songUrl: PropTypes.string,
   }
 
   static defaultProps = {
     songUrl: null,
+    changePlay: () => null,
   }
 
   state = {
@@ -20,14 +22,14 @@ class Player extends Component {
   }
 
   handleClick = () => {
-    this.setState(prevState => ({
-      playing: !prevState.playing,
-    }));
+    const { changePlay } = this.props;
+    changePlay(this);
   }
 
   render() {
     const { imgUrl, songUrl } = this.props;
     const { playing } = this.state;
+
     if (!songUrl) {
       return (
         <img
@@ -51,12 +53,21 @@ class Player extends Component {
           width={64}
           id="cover"
         />
-        <img
-          src={playPause}
-          alt="play-pause"
-          width={64}
-          id="overlay"
-        />
+        {(() => (
+          playing
+            ? (
+              <Icon
+                type="pause-circle"
+                className="overlay"
+              />
+            )
+            : (
+              <Icon
+                type="play-circle"
+                className="overlay"
+              />
+            )
+        ))()}
         <ReactPlayer url={songUrl} playing={playing} width={0} height={0} volume={0.1} />
       </div>
     );

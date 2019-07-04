@@ -32,12 +32,6 @@ function TopChart({ data }) {
     return <Line label={<CustomizedLabel />} type="monotone" key={musicName} dataKey={musicName} stroke={getRandomColor()} />;
   });
 
-  data.forEach((el) => {
-    if (el.xAxisChart === 'long') el.xAxisChart = 'Always'; // eslint-disable-line
-    else if (el.xAxisChart === 'medium') el.xAxisChart = 'Last 6 Months'; // eslint-disable-line
-    else el.xAxisChart = 'Last Month'; // eslint-disable-line
-  })
-
   return (
     <ResponsiveContainer>
       <LineChart
