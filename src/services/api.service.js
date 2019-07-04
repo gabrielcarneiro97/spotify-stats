@@ -3,24 +3,29 @@ import { auth } from './auth.service';
 
 const { api } = require('../public');
 
-export async function getUser() {
+async function get(url) {
   const { uid } = auth();
-  const { data } = await axios.get(`${api}/getUser`, {
-    params: {
-      uid,
-    },
-  });
+  try {
+    const { data } = await axios.get(url, {
+      params: {
+        uid,
+      },
+    });
 
-  return data;
+    return data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getUser() {
+  return get(`${api}/getUser`);
 }
 
 export async function getTop() {
-  const { uid } = auth();
-  const { data } = await axios.get(`${api}/getTop`, {
-    params: {
-      uid,
-    },
-  });
+  return get(`${api}/getTop`);
+}
 
-  return data;
+export async function getRecs() {
+  return get(`${api}/getRecs`);
 }

@@ -69,14 +69,32 @@ class Top extends Component {
     return (
       <Fragment>
         <Col xs={24} lg={12}>
-          <Card title="Top 20 - Tracks" extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>} loading={loading}>
+          <Card
+            title="Top 20 - Tracks"
+            extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>}
+            footer={(
+              <div>
+                <b>STATSFY</b>
+              </div>
+            )}
+            loading={loading}
+          >
             <div style={{ height: '70vh' }}>
               <TopChart data={trackData} />
             </div>
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="Top 20 - Artists" extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>} loading={loading}>
+          <Card
+            title="Top 20 - Artists"
+            extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>}
+            footer={(
+              <div>
+                <b>STATSFY</b>
+              </div>
+            )}
+            loading={loading}
+          >
             <div style={{ height: '70vh' }}>
               <TopChart data={artistData} />
             </div>

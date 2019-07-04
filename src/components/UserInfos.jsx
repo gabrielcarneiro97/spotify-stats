@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import Flag from './Flag';
 
-import { getUser } from '../services/api.service';
+import { getUser, getRecs } from '../services/api.service';
 import { auth } from '../services/auth.service';
 
 const { Meta } = Card;
@@ -29,7 +29,6 @@ class UserInfos extends Component {
     const { history } = this.props;
     try {
       const user = await getUser();
-      console.log(user);
       this.setState({ user, loading: false });
     } catch (err) {
       auth().signOut(history);

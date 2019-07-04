@@ -3,7 +3,6 @@ const admin = require('firebase-admin');
 const axios = require('axios');
 const qs = require('querystring');
 const { spotify } = require('./private');
-const { root } = require('./public');
 
 admin.initializeApp(functions.config().firestore);
 
@@ -127,6 +126,7 @@ function extractArtistData(artist) {
       long: null,
       medium: null,
       short: null,
+      rec: null,
     },
   };
 }
@@ -177,6 +177,7 @@ function extractTrackData(track) {
       long: null,
       medium: null,
       short: null,
+      rec: null,
     },
   };
 }
@@ -231,6 +232,94 @@ exports.getUser = functions.https.onRequest(async (req, res) => {
     const tokens = await checkRefresh(uid);
     const user = await getApiUser(tokens);
     res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
+exports.getRecs = functions.https.onRequest(async (req, res) => {
+  cors(res);
+  const { uid } = req.query;
+  try {
+    const tokens = await checkRefresh(uid);
+    const artists = await getApiTopArtists(tokens);
+    const tracks = await getApiTopTracks(tokens);
+
+    const longMatches = [1, 7, 17];
+    const mediumMatches = [4, 8, 16];
+    const shortMatches = [1, 3, 12, 15];
+
+    const topArtistsId = Object.keys(artists).filter((key) => {
+      const artist = artists[key];
+      const { long, medium, short } = artist.pos;
+
+      return (
+        longMatches.includes(long)
+        || mediumMatches.includes(medium)
+        || shortMatches.includes(short)
+      );
+    });
+
+    const topTracksId = Object.keys(tracks).filter((key) => {
+      const track = tracks[key];
+      const { long, medium, short } = track.pos;
+
+      return (
+        longMatches.includes(long)
+        || mediumMatches.includes(medium)
+        || shortMatches.includes(short)
+      );
+    });
+
+    const requests = [];
+    let reqCount = 0;
+    while ((topTracksId.length + topArtistsId.length) > 0) {
+      requests[reqCount] = {
+        artists: [],
+        tracks: [],
+      };
+      let track = true;
+      const sumLen = r => r.artists.length + r.tracks.length;
+      while ((sumLen(requests[reqCount])) < 4 && (topTracksId.length + topArtistsId.length) > 0) {
+        if (topTracksId.length === 0) track = false;
+        if (topArtistsId.length === 0) track = true;
+        if (track) {
+          requests[reqCount].tracks.push(topTracksId.pop());
+          track = false;
+        } else {
+          requests[reqCount].artists.push(topArtistsId.pop());
+          track = true;
+        }
+      }
+      reqCount += 1;
+    }
+    const url = 'https://api.spotify.com/v1/recommendations';
+    const musics = await Promise.all(requests.map(async (r) => {
+      const { artists: aIds, tracks: tIds } = r;
+      const aStr = aIds.join(',');
+      const tStr = tIds.join(',');
+
+      return spotifyGet(url, tokens, {
+        seed_artists: aStr,
+        seed_tracks: tStr,
+        limit: 30,
+      });
+    }));
+
+    const allTracks = {};
+
+    const extractFromItems = (items, offset) => items.forEach((t, i) => {
+      const track = allTracks[t.id] || extractTrackData(t);
+      track.pos.rec = (i + 1) + (offset * 10);
+      allTracks[track.id] = track;
+    });
+
+    musics.forEach(({ tracks: t }, i) => {
+      extractFromItems(t, i);
+    });
+
+    res.send({ tracks: allTracks });
   } catch (err) {
     console.error(err);
     res.status(500).send(err);

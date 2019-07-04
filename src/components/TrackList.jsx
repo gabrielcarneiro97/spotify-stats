@@ -19,7 +19,12 @@ class TrackList extends Component {
     type: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
+    pagination: PropTypes.object // eslint-disable-line
   };
+
+  static defaultProps = {
+    pagination: null,
+  }
 
   state = {
     playingNow: null,
@@ -52,19 +57,20 @@ class TrackList extends Component {
       type,
       title,
       loading,
+      pagination,
     } = this.props;
     return (
       <Card title={title} loading={loading}>
         <List
-          itemLayout="vertical"
           size="small"
+          pagination={pagination}
           dataSource={tracks}
           footer={(
             <div>
               <b>STATSFY</b>
             </div>
           )}
-          renderItem={(track, i) => (
+          renderItem={track => (
             <List.Item
               key={`${track.id}-${type}`}
               extra={(
@@ -79,7 +85,7 @@ class TrackList extends Component {
               <List.Item.Meta
                 avatar={(
                   <Avatar>
-                    {i + 1}
+                    {track.pos[type]}
                     .
                   </Avatar>
                 )}
@@ -92,7 +98,15 @@ class TrackList extends Component {
                     {maxLength(track.name, 21)}
                   </Button>
                 )}
-                description={<Button type="link" onClick={linkClick(track.artist.spotifyLink)}>{maxLength(track.artist.name)}</Button>}
+                description={(
+                  <Button
+                    type="link"
+                    style={{ color: 'rgba(0,0,0,0.45)' }}
+                    onClick={linkClick(track.artist.spotifyLink)}
+                  >
+                    {maxLength(track.artist.name)}
+                  </Button>
+                )}
               />
             </List.Item>
           )}

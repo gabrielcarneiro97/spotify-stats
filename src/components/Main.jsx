@@ -3,6 +3,7 @@ import { Col, Row, Layout } from 'antd';
 
 import UserInfos from './UserInfos';
 import Top from './Top';
+import Recommendations from './Recommendations';
 
 const { Content } = Layout;
 
@@ -17,6 +18,7 @@ function Main() {
       <Row style={{ margin: 5 }} gutter={10}>
         <Top />
       </Row>
+      <Recommendations />
     </Content>
   );
 }
