@@ -5,6 +5,7 @@ import { PropTypes } from 'prop-types';
 
 import { getTop } from '../services/api.service';
 
+import { Text } from './LanguageManager';
 import TopChart from './TopChart';
 
 function reverseObj(objParam) {
@@ -70,7 +71,14 @@ class Top extends Component {
       <Fragment>
         <Col xs={24} lg={12}>
           <Card
-            title="Top 20 - Tracks"
+            title={(
+              <Text
+                dicio={{
+                  en: 'Top 20 - Tracks',
+                  pt: 'Top 20 - Músicas',
+                }}
+              />
+            )}
             extra={<Button type="link" onClick={() => history.push('/tracks')}>More Info</Button>}
             footer={(
               <div>
@@ -86,7 +94,14 @@ class Top extends Component {
         </Col>
         <Col xs={24} lg={12}>
           <Card
-            title="Top 20 - Artists"
+            title={(
+              <Text
+                dicio={{
+                  en: 'Top 20 - Artists',
+                  pt: 'Top 20 - Artistas',
+                }}
+              />
+            )}
             extra={<Button type="link" onClick={() => history.push('/artists')}>More Info</Button>}
             footer={(
               <div>

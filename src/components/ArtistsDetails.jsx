@@ -4,6 +4,7 @@ import { Col, Row, Layout } from 'antd';
 import { getTop } from '../services/api.service';
 
 import ArtistList from './ArtistList';
+import { Text } from './LanguageManager';
 
 
 const { Content } = Layout;
@@ -74,7 +75,13 @@ class ArtistsDetails extends Component {
               artists={short}
               pagination={{ pageSize: 5 }}
               type="short"
-              title="Last Month"
+              title={(
+                <Text dicio={{
+                  en: 'Last Month',
+                  pt: 'Último Mês',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>
@@ -83,7 +90,13 @@ class ArtistsDetails extends Component {
               artists={medium}
               pagination={{ pageSize: 5 }}
               type="medium"
-              title="Last 6 Months"
+              title={(
+                <Text dicio={{
+                  en: 'Last 6 Months',
+                  pt: 'Últimos 6 Mês',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>
@@ -92,7 +105,13 @@ class ArtistsDetails extends Component {
               artists={long}
               pagination={{ pageSize: 5 }}
               type="long"
-              title="Always"
+              title={(
+                <Text dicio={{
+                  en: 'Always',
+                  pt: 'Desde Sempre',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>

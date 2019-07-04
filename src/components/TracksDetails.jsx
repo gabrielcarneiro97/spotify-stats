@@ -4,7 +4,7 @@ import { Col, Row, Layout } from 'antd';
 import { getTop } from '../services/api.service';
 
 import TrackList from './TrackList';
-
+import { Text } from './LanguageManager';
 
 const { Content } = Layout;
 
@@ -75,7 +75,13 @@ class TracksDetails extends Component {
               pagination={{ pageSize: 5 }}
               tracks={short}
               type="short"
-              title="Last Month"
+              title={(
+                <Text dicio={{
+                  en: 'Last Month',
+                  pt: 'Último Mês',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>
@@ -84,7 +90,13 @@ class TracksDetails extends Component {
               pagination={{ pageSize: 5 }}
               tracks={medium}
               type="medium"
-              title="Last 6 Months"
+              title={(
+                <Text dicio={{
+                  en: 'Last 6 Months',
+                  pt: 'Últimos 6 Mês',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>
@@ -93,7 +105,13 @@ class TracksDetails extends Component {
               pagination={{ pageSize: 5 }}
               tracks={long}
               type="long"
-              title="Always"
+              title={(
+                <Text dicio={{
+                  en: 'Always',
+                  pt: 'Desde Sempre',
+                }}
+                />
+              )}
               loading={loading}
             />
           </Col>

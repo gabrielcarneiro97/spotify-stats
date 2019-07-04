@@ -68,7 +68,7 @@ function ArtistList(props) {
 ArtistList.propTypes = {
   artists: PropTypes.array, //eslint-disable-line
   type: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.object.isRequired, // eslint-disable-line
   loading: PropTypes.bool.isRequired,
   pagination: PropTypes.object // eslint-disable-line
 };

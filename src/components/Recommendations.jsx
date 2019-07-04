@@ -3,6 +3,7 @@ import { Col, Row } from 'antd';
 
 import { getRecs } from '../services/api.service';
 import TrackList from './TrackList';
+import { Text } from './LanguageManager';
 
 function trackSort(type) {
   return (a, b) => {
@@ -53,7 +54,13 @@ class Recommendations extends Component {
           <TrackList
             tracks={rec}
             type="rec"
-            title="Recommendations"
+            title={(
+              <Text dicio={{
+                en: 'Recommendations',
+                pt: 'Recomendações',
+              }}
+              />
+            )}
             loading={loading}
             pagination={{ pageSize: 5 }}
           />

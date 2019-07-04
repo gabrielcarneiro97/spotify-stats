@@ -8,7 +8,9 @@ import {
   Tooltip,
 } from 'antd';
 import PropTypes from 'prop-types';
+
 import Flag from './Flag';
+import { Text } from './LanguageManager';
 
 import { getUser } from '../services/api.service';
 import { auth } from '../services/auth.service';
@@ -64,7 +66,16 @@ class UserInfos extends Component {
             avatar={<Avatar size={64} src={avatar} />}
             title={(
               <Fragment>
-                <Tooltip placement="bottom" title="Open at Spotify">
+                <Tooltip
+                  placement="bottom"
+                  title={(
+                    <Text dicio={{
+                      en: 'Open at Spotify',
+                      pt: 'Abrir no Spotify',
+                    }}
+                    />
+                  )}
+                >
                   <Button type="link" size="large" onClick={clickName}>{displayName}</Button>
                 </Tooltip>
                 <Flag country={country} />
