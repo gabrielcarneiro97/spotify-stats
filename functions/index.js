@@ -341,3 +341,14 @@ exports.spotifyLogin = functions.https.onRequest(async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+exports.spotifyLink = functions.https.onRequest(async (req, res) => {
+  cors(res);
+  const base = 'https://accounts.spotify.com/authorize?';
+  const clientId = `client_id=${spotify.clientId}`;
+  const responseType = '&response_type=code';
+  const redirectUri = `&redirect_uri=${spotify.encodedRedirectUri}`;
+  const scope = `&scope=${spotify.encodedScopes}`;
+
+  res.send(base + clientId + responseType + redirectUri + scope);
+});

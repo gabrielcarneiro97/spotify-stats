@@ -42,7 +42,7 @@ export const LanguageSelect = () => (
         <Option value="en">
           <Flag country="US" />
           &nbsp;
-          EN
+          EN-US
         </Option>
       </Select>
     )}

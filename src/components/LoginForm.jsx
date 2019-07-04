@@ -28,8 +28,8 @@ class LoginForm extends Component {
     }).isRequired,
   }
 
-  handleSpotify = () => {
-    spotifyRedirect();
+  handleSpotify = async () => {
+    await spotifyRedirect();
   };
 
   render() {

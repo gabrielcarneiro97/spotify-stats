@@ -1,17 +1,11 @@
 import cookies from 'cookiesjs';
 import axios from 'axios';
 
-const { spotify } = require('../private');
 const { api } = require('../public');
 
-export function spotifyAuthLink() {
-  const base = 'https://accounts.spotify.com/authorize?';
-  const clientId = `client_id=${spotify.clientId}`;
-  const responseType = '&response_type=code';
-  const redirectUri = `&redirect_uri=${spotify.encodedRedirectUri}`;
-  const scope = `&scope=${spotify.encodedScopes}`;
-
-  return base + clientId + responseType + redirectUri + scope;
+export async function spotifyAuthLink() {
+  const { data } = await axios.get(`${api}/spotifyLink`);
+  return data;
 }
 
 export function auth() {
@@ -24,8 +18,10 @@ export function auth() {
   };
 }
 
-export function spotifyRedirect() {
-  window.location.href = spotifyAuthLink();
+export async function spotifyRedirect() {
+  const link = await spotifyAuthLink();
+  console.log(link);
+  window.location.href = link;
 }
 
 export async function login(code) {
