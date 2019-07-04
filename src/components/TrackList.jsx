@@ -84,7 +84,7 @@ class TrackList extends Component {
             >
               <List.Item.Meta
                 avatar={(
-                  <Avatar>
+                  <Avatar style={{ backgroundColor: track.preview ? '#6EFF49' : null }}>
                     {track.pos[type]}
                     .
                   </Avatar>
