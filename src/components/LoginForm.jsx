@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Form,
-  Icon,
   Button,
 } from 'antd';
 import propTypes from 'prop-types';
@@ -40,7 +39,7 @@ class LoginForm extends Component {
           <Button size="large" className="login-form-button" onClick={this.handleSpotify}>
             <FontAwesomeIcon icon={faSpotify} />
             <span style={{ marginLeft: 5 }}>
-              Entrar com Spotify
+              Sign in with Spotify
             </span>
           </Button>
         </FormItem>
