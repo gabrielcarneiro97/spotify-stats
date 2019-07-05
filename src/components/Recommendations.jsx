@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'antd';
+import { Col } from 'antd';
 
 import { getRecs } from '../services/api.service';
 import TrackList from './TrackList';

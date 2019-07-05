@@ -15,10 +15,10 @@ function QuizMain({ history }) {
     <Col xs={24} xl={12} style={{ marginTop: 10 }}>
       <Row type="flex" justify="center" align="middle">
         <Col span={24}>
-          <Card title="Quiz" style={{ minHeight: '632px' }}>
+          <Card title="Quiz">
             <Row type="flex" justify="center" align="middle">
               <Col span={24} style={{ height: '100%', textAlign: 'center' }}>
-                <Button onClick={() => history.push('/quiz')} type="primary" size="large" style={{ marginTop: '20%' }}>
+                <Button onClick={() => history.push('/quiz')} type="primary" size="large">
                   <Text dicio={{ pt: 'Fazer o Quiz Agora!', en: 'Make the Quiz Now!' }} />
                 </Button>
               </Col>

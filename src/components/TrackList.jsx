@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   List,
-  Avatar,
   Button,
   Card,
 } from 'antd';
 
 import Player from './Player';
+import AddButton from './AddButton';
 
 import { maxLength } from '../services/string.service';
 
@@ -85,46 +85,46 @@ class TrackList extends Component {
               <b>STATSFY</b>
             </div>
           )}
-          renderItem={track => (
-            <List.Item
-              key={`${track.id}-${type}`}
-              extra={(
-                <Player
-                  changePlay={this.handlePlay}
-                  songUrl={track.preview}
-                  imgUrl={track.album.cover}
-                  id={`${track.id}-${type}`}
+          renderItem={(track) => {
+            const avatarColor = track.preview ? '#6EFF49' : null;
+            return (
+              <List.Item
+                key={`${track.id}-${type}`}
+                extra={(
+                  <Player
+                    changePlay={this.handlePlay}
+                    songUrl={track.preview}
+                    imgUrl={track.album.cover}
+                    id={`${track.id}-${type}`}
+                  />
+                )}
+              >
+                <List.Item.Meta
+                  avatar={(
+                    <AddButton text={`${track.pos[type]}.`} color={avatarColor} musicUri={track.uri} />
+                  )}
+                  title={(
+                    <Button
+                      type="link"
+                      onClick={linkClick(track.spotifyLink)}
+                      style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
+                    >
+                      {maxLength(track.name, 21)}
+                    </Button>
+                  )}
+                  description={(
+                    <Button
+                      type="link"
+                      style={{ color: 'rgba(0,0,0,0.45)' }}
+                      onClick={linkClick(track.artist.spotifyLink)}
+                    >
+                      {maxLength(track.artist.name)}
+                    </Button>
+                  )}
                 />
-              )}
-            >
-              <List.Item.Meta
-                avatar={(
-                  <Avatar style={{ backgroundColor: track.preview ? '#6EFF49' : null }}>
-                    {track.pos[type]}
-                    .
-                  </Avatar>
-                )}
-                title={(
-                  <Button
-                    type="link"
-                    onClick={linkClick(track.spotifyLink)}
-                    style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
-                  >
-                    {maxLength(track.name, 21)}
-                  </Button>
-                )}
-                description={(
-                  <Button
-                    type="link"
-                    style={{ color: 'rgba(0,0,0,0.45)' }}
-                    onClick={linkClick(track.artist.spotifyLink)}
-                  >
-                    {maxLength(track.artist.name)}
-                  </Button>
-                )}
-              />
-            </List.Item>
-          )}
+              </List.Item>
+            );
+          }}
         />
       </Card>
     );
