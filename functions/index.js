@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
 const qs = require('querystring');
+const cors = require('cors')({ origin: true });
+
 const { spotify } = require('./private');
 
 admin.initializeApp(functions.config().firestore);
@@ -9,12 +11,6 @@ admin.initializeApp(functions.config().firestore);
 const db = admin.firestore();
 
 const tokensCol = db.collection('tokens');
-
-function cors(res) {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-}
 
 async function token(type, code) {
   const grantType = type === 'code' ? 'authorization_code' : type;
@@ -252,6 +248,45 @@ async function getAllPlaylists(uid, tokens) {
   return spotifyGet(`https://api.spotify.com/v1/users/${uid}/playlists`, tokens);
 }
 
+function extractPlaylistData(playlist, uid) {
+  const cover = (() => {
+    if (playlist.images) {
+      if (playlist.images.length > 0) {
+        return playlist.images[0].url;
+      }
+      return null;
+    }
+    return null;
+  })();
+
+  const isOwner = playlist.owner.id === uid;
+  const editable = isOwner || playlist.collaborative;
+
+  return {
+    name: playlist.name,
+    id: playlist.id,
+    uri: playlist.uri,
+    cover,
+    editable,
+    isOwner,
+    owner: {
+      id: playlist.owner.id,
+      type: playlist.owner.type,
+    },
+  };
+}
+
+async function getApiPlaylists(uid, tokens) {
+  try {
+    const { items } = await getAllPlaylists(uid, tokens);
+    const playlists = items.map(p => extractPlaylistData(p, uid));
+
+    return playlists;
+  } catch (err) {
+    throw err;
+  }
+}
+
 function extractGenres(artists) {
   let genres = Object.keys(artists).map((k) => {
     const artist = artists[k];
@@ -263,17 +298,36 @@ function extractGenres(artists) {
   return genres;
 }
 
-function extractUris(tracks) {
-  return Object.keys(tracks).map(k => tracks[k].uri);
+async function addMusicsToPlaylist(playlistId, uris, tokens) {
+  const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  try {
+    return spotifyPost(populateUrl, tokens, {}, {
+      uris,
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function replacePlaylistMusics(playlistId, uris, tokens) {
+  const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  try {
+    return spotifyPut(populateUrl, tokens, {}, {
+      uris,
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+function extractUris(items) {
+  return Object.keys(items).map(k => items[k].uri);
 }
 
 exports.createPlaylist = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { uid, playlistName } = req.query;
-  const { tracks } = req.body;
-  if (!tracks) {
-    res.sendStatus(200);
-  } else {
+  cors(req, res, async () => {
+    const { uid, playlistName } = req.query;
+    const { tracks } = req.body;
     const uris = extractUris(tracks);
     const createUrl = `https://api.spotify.com/v1/users/${uid}/playlists`;
     try {
@@ -282,11 +336,8 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
       const exists = playlists.find(playlist => playlist.name === playlistName);
 
       const populate = async (playlistId) => {
-        const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
         try {
-          const data = await spotifyPut(populateUrl, tokens, {}, {
-            uris,
-          });
+          await replacePlaylistMusics(playlistId, uris, tokens);
           res.sendStatus(201);
         } catch (err) {
           console.error(err);
@@ -308,202 +359,237 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
       console.error(err);
       res.status(500).send(err);
     }
-  }
+  });
 });
 
 exports.getTop = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { uid } = req.query;
-  try {
-    const tokens = await checkRefresh(uid);
-    const artists = await getApiTopArtists(tokens);
-    const tracks = await getApiTopTracks(tokens);
-    const genres = extractGenres(artists);
+  cors(req, res, async () => {
+    const { uid } = req.query;
+    try {
+      const tokens = await checkRefresh(uid);
+      const artists = await getApiTopArtists(tokens);
+      const tracks = await getApiTopTracks(tokens);
+      const genres = extractGenres(artists);
 
-    res.send({
-      artists,
-      tracks,
-      genres,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
+      res.send({
+        artists,
+        tracks,
+        genres,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
 });
 
 exports.getUser = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { uid } = req.query;
-  try {
-    const tokens = await checkRefresh(uid);
-    const user = await getApiUser(tokens);
-    res.send(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
+  cors(req, res, async () => {
+    const { uid } = req.query;
+    try {
+      const tokens = await checkRefresh(uid);
+      const user = await getApiUser(tokens);
+      res.send(user);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+});
+
+exports.getPlaylists = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    const { uid } = req.query;
+    try {
+      const tokens = await checkRefresh(uid);
+      const playlists = await getApiPlaylists(uid, tokens);
+      res.send(playlists);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
 });
 
 exports.getRecs = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { uid } = req.query;
-  try {
-    const tokens = await checkRefresh(uid);
-    const artists = await getApiTopArtists(tokens);
-    const tracks = await getApiTopTracks(tokens);
+  cors(req, res, async () => {
+    const { uid } = req.query;
+    try {
+      const tokens = await checkRefresh(uid);
+      const artists = await getApiTopArtists(tokens);
+      const tracks = await getApiTopTracks(tokens);
 
-    const longMatches = [1, 3, 7, 17];
-    const mediumMatches = [4, 8, 10, 16];
-    const shortMatches = [1, 3, 12, 15, 18];
+      const longMatches = [1, 3, 7, 17];
+      const mediumMatches = [4, 8, 10, 16];
+      const shortMatches = [1, 3, 12, 15, 18];
 
-    const topArtistsId = Object.keys(artists).filter((key) => {
-      const artist = artists[key];
-      const { long, medium, short } = artist.pos;
+      const topArtistsId = Object.keys(artists).filter((key) => {
+        const artist = artists[key];
+        const { long, medium, short } = artist.pos;
 
-      return (
-        longMatches.includes(long)
-        || mediumMatches.includes(medium)
-        || shortMatches.includes(short)
-      );
-    });
-
-    const topTracksId = Object.keys(tracks).filter((key) => {
-      const track = tracks[key];
-      const { long, medium, short } = track.pos;
-
-      return (
-        longMatches.includes(long)
-        || mediumMatches.includes(medium)
-        || shortMatches.includes(short)
-      );
-    });
-
-    const requests = [];
-    let reqCount = 0;
-    while ((topTracksId.length + topArtistsId.length) > 0) {
-      requests[reqCount] = {
-        artists: [],
-        tracks: [],
-      };
-      let track = true;
-      const sumLen = r => r.artists.length + r.tracks.length;
-      while ((sumLen(requests[reqCount])) < 4 && (topTracksId.length + topArtistsId.length) > 0) {
-        if (topTracksId.length === 0) track = false;
-        if (topArtistsId.length === 0) track = true;
-        if (track) {
-          requests[reqCount].tracks.push(topTracksId.pop());
-          track = false;
-        } else {
-          requests[reqCount].artists.push(topArtistsId.pop());
-          track = true;
-        }
-      }
-      reqCount += 1;
-    }
-    const url = 'https://api.spotify.com/v1/recommendations';
-    const musics = await Promise.all(requests.map(async (r) => {
-      const { artists: aIds, tracks: tIds } = r;
-      const aStr = aIds.join(',');
-      const tStr = tIds.join(',');
-
-      return spotifyGet(url, tokens, {
-        seed_artists: aStr,
-        seed_tracks: tStr,
-        limit: 30,
+        return (
+          longMatches.includes(long)
+          || mediumMatches.includes(medium)
+          || shortMatches.includes(short)
+        );
       });
-    }));
 
-    const allTracks = {};
+      const topTracksId = Object.keys(tracks).filter((key) => {
+        const track = tracks[key];
+        const { long, medium, short } = track.pos;
 
-    const extractFromItems = (items, offset) => items.forEach((t, i) => {
-      const track = allTracks[t.id] || extractTrackData(t);
-      track.pos.rec = (i + 1) + (offset * 10);
-      allTracks[track.id] = track;
-    });
+        return (
+          longMatches.includes(long)
+          || mediumMatches.includes(medium)
+          || shortMatches.includes(short)
+        );
+      });
 
-    musics.forEach(({ tracks: t }, i) => {
-      extractFromItems(t, i);
-    });
+      const requests = [];
+      let reqCount = 0;
+      while ((topTracksId.length + topArtistsId.length) > 0) {
+        requests[reqCount] = {
+          artists: [],
+          tracks: [],
+        };
+        let track = true;
+        const sumLen = r => r.artists.length + r.tracks.length;
+        while ((sumLen(requests[reqCount])) < 4 && (topTracksId.length + topArtistsId.length) > 0) {
+          if (topTracksId.length === 0) track = false;
+          if (topArtistsId.length === 0) track = true;
+          if (track) {
+            requests[reqCount].tracks.push(topTracksId.pop());
+            track = false;
+          } else {
+            requests[reqCount].artists.push(topArtistsId.pop());
+            track = true;
+          }
+        }
+        reqCount += 1;
+      }
+      const url = 'https://api.spotify.com/v1/recommendations';
+      const musics = await Promise.all(requests.map(async (r) => {
+        const { artists: aIds, tracks: tIds } = r;
+        const aStr = aIds.join(',');
+        const tStr = tIds.join(',');
 
-    res.send({ tracks: allTracks });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
+        return spotifyGet(url, tokens, {
+          seed_artists: aStr,
+          seed_tracks: tStr,
+          limit: 30,
+        });
+      }));
+
+      const allTracks = {};
+
+      const extractFromItems = (items, offset) => items.forEach((t, i) => {
+        const track = allTracks[t.id] || extractTrackData(t);
+        track.pos.rec = (i + 1) + (offset * 10);
+        allTracks[track.id] = track;
+      });
+
+      musics.forEach(({ tracks: t }, i) => {
+        extractFromItems(t, i);
+      });
+
+      res.send({ tracks: allTracks });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+});
+
+exports.addMusic = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    const { uid, musicUri, playlistId } = req.query;
+    try {
+      const tokens = await checkRefresh(uid);
+      const uris = [musicUri];
+
+      await addMusicsToPlaylist(playlistId, uris, tokens);
+      res.sendStatus(201);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
 });
 
 exports.playlistQuiz = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { uid, ...ans } = req.query;
+  cors(req, res, async () => {
+    const { uid, ...ans } = req.query;
 
-  const artistsArrId = [];
-  const tracksArrId = [];
-  const genresArrId = [];
+    const artistsArrId = [];
+    const tracksArrId = [];
+    const genresArrId = [];
 
-  Object.keys(ans).forEach((k) => {
-    const d = ans[k];
-    const [id, type] = d.split('|');
+    Object.keys(ans).forEach((k) => {
+      const d = ans[k];
+      const [id, type] = d.split('|');
 
-    if (type === 'genres') genresArrId.push(id);
-    else if (type === 'tracks') tracksArrId.push(id);
-    else artistsArrId.push(id);
+      if (type === 'genres') genresArrId.push(id);
+      else if (type === 'tracks') tracksArrId.push(id);
+      else artistsArrId.push(id);
+    });
+
+    const aStr = artistsArrId.join(',');
+    const tStr = tracksArrId.join(',');
+    const gStr = decodeURI(genresArrId.join(','));
+
+    try {
+      const tokens = await checkRefresh(uid);
+      const url = 'https://api.spotify.com/v1/recommendations';
+
+      const allTracks = {};
+
+      const extractFromItems = items => items.forEach((t, i) => {
+        const track = allTracks[t.id] || extractTrackData(t);
+        track.pos.rec = i + 1;
+        allTracks[track.id] = track;
+      });
+
+      const { tracks } = await spotifyGet(url, tokens, {
+        seed_artists: aStr,
+        seed_tracks: tStr,
+        seed_genres: gStr,
+        limit: 30,
+      });
+
+      extractFromItems(tracks);
+
+      res.send({ allTracks });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
   });
-
-  const aStr = artistsArrId.join(',');
-  const tStr = tracksArrId.join(',');
-  const gStr = decodeURI(genresArrId.join(','));
-
-  try {
-    const tokens = await checkRefresh(uid);
-    const url = 'https://api.spotify.com/v1/recommendations';
-
-    const allTracks = {};
-
-    const extractFromItems = items => items.forEach((t, i) => {
-      const track = allTracks[t.id] || extractTrackData(t);
-      track.pos.rec = i + 1;
-      allTracks[track.id] = track;
-    });
-
-    const { tracks } = await spotifyGet(url, tokens, {
-      seed_artists: aStr,
-      seed_tracks: tStr,
-      seed_genres: gStr,
-      limit: 30,
-    });
-
-    extractFromItems(tracks);
-
-    res.send({ allTracks });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
 });
 
 exports.spotifyLogin = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const { code } = req.query;
-  try {
-    const tokens = await token('code', code);
-    const user = await getApiUser(tokens);
+  cors(req, res, async () => {
+    const { code } = req.query;
+    try {
+      const tokens = await token('code', code);
+      const user = await getApiUser(tokens);
 
-    await saveDBTokens(user.id, tokens);
+      await saveDBTokens(user.id, tokens);
 
-    res.send(user);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
-  }
+      res.send(user);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
 });
 
 exports.spotifyLink = functions.https.onRequest(async (req, res) => {
-  cors(res);
-  const base = 'https://accounts.spotify.com/authorize?';
-  const clientId = `client_id=${spotify.clientId}`;
-  const responseType = '&response_type=code';
-  const redirectUri = `&redirect_uri=${spotify.encodedRedirectUri}`;
-  const scope = `&scope=${spotify.encodedScopes}`;
+  cors(req, res, async () => {
+    const base = 'https://accounts.spotify.com/authorize?';
+    const clientId = `client_id=${spotify.clientId}`;
+    const responseType = '&response_type=code';
+    const redirectUri = `&redirect_uri=${spotify.encodedRedirectUri}`;
+    const scope = `&scope=${spotify.encodedScopes}`;
 
-  res.send(base + clientId + responseType + redirectUri + scope);
+    res.send(base + clientId + responseType + redirectUri + scope);
+  });
 });

@@ -22,6 +22,10 @@ export async function getUser() {
   return get(`${api}/getUser`);
 }
 
+export async function getPlaylists() {
+  return get(`${api}/getPlaylists`);
+}
+
 export async function getTop() {
   return get(`${api}/getTop`);
 }
@@ -46,6 +50,23 @@ export async function getPlaylistQuiz(answers) {
       },
     });
 
+    return data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function addMusic(playlistId, musicUri) {
+  const { uid } = auth();
+  console.log('addMusic');
+  try {
+    const { data } = await axios.put(`${api}/addMusic`, {}, {
+      params: {
+        uid,
+        playlistId,
+        musicUri,
+      },
+    });
     return data;
   } catch (err) {
     throw err;

@@ -72,12 +72,12 @@ class QuizEnd extends Component {
                 />
               </Col>
               <Col xs={24} style={{ textAlign: 'center', marginTop: '2vh' }}>
-                <Button type="primary" size="large" onClick={() => clickSend(playlistName)}>
+                <Button type="primary" size="large" onClick={() => clickSend(playlistName)} disabled={loading}>
                   <Text dicio={{ pt: 'Exportar para o Spotify!', en: 'Send to Spotify!' }} />
                 </Button>
               </Col>
             </Row>
-            <Row Row type="flex" justify="center" align="middle" style={{ marginTop: '2vh' }}>
+            <Row type="flex" justify="center" align="middle" style={{ marginTop: '2vh' }}>
               <Col xs={24} style={{ textAlign: 'center' }}>
                 <Button size="large" onClick={() => history.push('/')}>
                   <Text dicio={{ pt: 'Voltar', en: 'Go Back' }} />

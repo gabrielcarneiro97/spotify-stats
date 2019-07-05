@@ -11,6 +11,8 @@ import AddButton from './AddButton';
 import { Text } from './LanguageManager';
 
 import { maxLength } from '../services/string.service';
+import { getPlaylists } from '../services/api.service';
+
 
 const linkClick = link => () => window.open(link, '_blank');
 
@@ -19,7 +21,6 @@ class TrackList extends Component {
     tracks: PropTypes.array, //eslint-disable-line
     type: PropTypes.string.isRequired,
     title: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
-    loading: PropTypes.bool.isRequired,
     pagination: PropTypes.object // eslint-disable-line
   };
 
@@ -29,7 +30,21 @@ class TrackList extends Component {
 
   state = {
     playingNow: null,
+    loading: true,
+    playlists: [],
   };
+
+  async componentWillMount() {
+    try {
+      const playlists = await getPlaylists();
+      this.setState({
+        loading: false,
+        playlists,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   stopMusic = () => {
     const { playingNow } = this.state;
@@ -66,9 +81,14 @@ class TrackList extends Component {
       tracks,
       type,
       title,
-      loading,
       pagination,
     } = this.props;
+    const {
+      playlists,
+      loading: loadingState,
+    } = this.state;
+
+    const loading = ((!tracks) || loadingState);
 
     const pag = pagination === null ? null : {
       onChange: this.stopMusic,
@@ -116,7 +136,7 @@ class TrackList extends Component {
               >
                 <List.Item.Meta
                   avatar={(
-                    <AddButton text={track.pos[type]} musicUri={track.uri} />
+                    <AddButton text={track.pos[type]} track={track} playlists={playlists} />
                   )}
                   title={(
                     <Fragment>
