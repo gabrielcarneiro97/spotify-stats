@@ -12,7 +12,7 @@ export const LanguageConsumer = LanguageContext.Consumer;
 
 export class LanguageProvider extends React.Component {
   state = {
-    language: cookies('statsfyLang'),
+    language: cookies('statsfyLang') || 'pt',
   };
 
   updateLanguage = (value) => {
