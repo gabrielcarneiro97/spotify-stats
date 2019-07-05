@@ -1,27 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Avatar } from 'antd';
-
-import { Text } from './LanguageManager';
+import { Button } from 'antd';
 
 class AddButton extends Component {
   static propTypes = {
     text: PropTypes.oneOfType([
-      PropTypes.string, PropTypes.instanceOf(Text),
+      PropTypes.string, PropTypes.object,
     ]).isRequired,
-    color: PropTypes.string.isRequired,
     musicUri: PropTypes.string.isRequired,
   }
 
   state = {};
 
   render() {
-    const { text, color, musicUri } = this.props;
+    const { text, musicUri } = this.props;
     console.log(musicUri);
     return (
-      <Avatar style={{ backgroundColor: color }}>
+      <Button shape="circle">
         {text}
-      </Avatar>
+      </Button>
     );
   }
 }

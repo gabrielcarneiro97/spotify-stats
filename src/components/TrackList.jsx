@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
   List,
@@ -18,7 +18,7 @@ class TrackList extends Component {
   static propTypes = {
     tracks: PropTypes.array, //eslint-disable-line
     type: PropTypes.string.isRequired,
-    title: PropTypes.oneOfType([PropTypes.instanceOf(Text), PropTypes.string ]).isRequired,
+    title: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
     loading: PropTypes.bool.isRequired,
     pagination: PropTypes.object // eslint-disable-line
   };
@@ -87,7 +87,21 @@ class TrackList extends Component {
             </div>
           )}
           renderItem={(track) => {
-            const avatarColor = track.preview ? '#6EFF49' : '';
+            const previewAvaible = track.preview ? (
+              <span
+                style={{
+                  color: 'rgba(0,0,0,0.45)',
+                  fontSize: '8px',
+                  verticalAlign: 'text-top',
+                }}
+              >
+                <Text dicio={{
+                  pt: 'PREVIEW DISPONÍVEL!',
+                  en: 'PREVIEW AVAILABLE',
+                }}
+                />
+              </span>
+            ) : '';
             return (
               <List.Item
                 key={`${track.id}-${type}`}
@@ -102,16 +116,23 @@ class TrackList extends Component {
               >
                 <List.Item.Meta
                   avatar={(
-                    <AddButton text={`${track.pos[type]}.`} color={avatarColor} musicUri={track.uri} />
+                    <AddButton text={track.pos[type]} musicUri={track.uri} />
                   )}
                   title={(
-                    <Button
-                      type="link"
-                      onClick={linkClick(track.spotifyLink)}
-                      style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
-                    >
-                      {maxLength(track.name, 21)}
-                    </Button>
+                    <Fragment>
+                      <Button
+                        type="link"
+                        onClick={linkClick(track.spotifyLink)}
+                        style={{
+                          color: 'rgba(0, 0, 0, 0.85)',
+                          fontWeight: 'bold',
+                          paddingRight: '5px',
+                        }}
+                      >
+                        {maxLength(track.name, 21)}
+                      </Button>
+                      {previewAvaible}
+                    </Fragment>
                   )}
                   description={(
                     <Button

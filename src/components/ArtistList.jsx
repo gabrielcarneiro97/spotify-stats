@@ -20,11 +20,15 @@ function ArtistList(props) {
     pagination,
   } = props;
 
+  const pag = pagination === null ? null : {
+    simple: true,
+    ...pagination,
+  };
   return (
     <Card title={title} loading={loading}>
       <List
         size="small"
-        pagination={pagination}
+        pagination={pag}
         dataSource={artists}
         footer={(
           <div>
@@ -53,7 +57,8 @@ function ArtistList(props) {
                 <Button
                   type="link"
                   onClick={linkClick(artist.spotifyLink)}
-                  style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}>
+                  style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
+                >
                   {maxLength(artist.name, 21)}
                 </Button>
               )}
@@ -74,7 +79,7 @@ ArtistList.propTypes = {
 };
 
 ArtistList.defautProps = {
-  pagination: { pageSize: 10 },
+  pagination: null,
 };
 
 export default ArtistList;
