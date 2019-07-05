@@ -51,7 +51,7 @@ class QuizEnd extends Component {
     const rec = loading ? null : filterTracks(tracks);
     return (
       <Row type="flex" justify="center" align="middle" style={{ marginTop: '10vh', marginBottom: '10vh' }}>
-        <Col xs={24} md={12}>
+        <Col xs={24} md={20}>
           <Card title={<Text dicio={{ pt: 'Aqui está sua Playlist!', en: 'Here is your Playlist!' }} />} loading={loading}>
             <Row>
               <TrackList
@@ -63,17 +63,22 @@ class QuizEnd extends Component {
               />
             </Row>
             <Row type="flex" justify="end" align="middle" style={{ marginTop: '2vh' }}>
-              <Col xs={24} md={12}>
-                <Input addonBefore={<Text dicio={{ pt: 'Nome da Playlist:', en: 'Playlist Name:' }} />} value={playlistName} onChange={this.handlePlaylistChange} />
+              <Col xs={24}>
+                <Input
+                  addonBefore={<Text dicio={{ pt: 'Nome da Playlist:', en: 'Playlist Name:' }} />}
+                  value={playlistName}
+                  onChange={this.handlePlaylistChange}
+                  style={{ width: '100%' }}
+                />
               </Col>
-              <Col xs={24} md={12} style={{ textAlign: 'end' }}>
+              <Col xs={24} style={{ textAlign: 'center', marginTop: '2vh' }}>
                 <Button type="primary" size="large" onClick={() => clickSend(playlistName)}>
                   <Text dicio={{ pt: 'Exportar para o Spotify!', en: 'Send to Spotify!' }} />
                 </Button>
               </Col>
             </Row>
             <Row Row type="flex" justify="center" align="middle" style={{ marginTop: '2vh' }}>
-              <Col xs={24} md={12} style={{ textAlign: 'center' }}>
+              <Col xs={24} style={{ textAlign: 'center' }}>
                 <Button size="large" onClick={() => history.push('/')}>
                   <Text dicio={{ pt: 'Voltar', en: 'Go Back' }} />
                 </Button>

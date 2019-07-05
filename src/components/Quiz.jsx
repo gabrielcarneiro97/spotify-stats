@@ -4,8 +4,6 @@ import { Layout, Modal, message } from 'antd';
 import QuizGame from './QuizGame';
 import QuizEnd from './QuizEnd';
 
-import { Text } from './LanguageManager';
-
 import { getPlaylistQuiz, createPlaylist } from '../services/api.service';
 
 const { Content } = Layout;
@@ -50,7 +48,7 @@ class Quiz extends Component {
   render() {
     const { showGame, tracksEnd } = this.state;
     return (
-      <Content style={{ minHeight: '92vh' }}>
+      <Content style={{ minHeight: '92vh', marginLeft: '1vh', marginRight: '1vh' }}>
         <div style={{ display: showGame ? 'block' : 'none' }}>
           <QuizGame onEnd={this.handleEnd} />
         </div>

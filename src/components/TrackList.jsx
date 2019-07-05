@@ -71,6 +71,7 @@ class TrackList extends Component {
 
     const pag = pagination === null ? null : {
       onChange: this.stopMusic,
+      simple: true,
       ...pagination,
     };
     return (
