@@ -13,6 +13,7 @@ const tokensCol = db.collection('tokens');
 function cors(res) {
   res.set('Access-Control-Allow-Origin', '*');
   res.set('Access-Control-Allow-Methods', 'GET, POST');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 async function token(type, code) {
@@ -52,6 +53,34 @@ async function spotifyGet(url, { access_token: at }, params) {
       params,
     });
     return axiosRes.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function spotifyPost(url, { access_token: at }, params, data) {
+  try {
+    const axiosRes = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
+      params,
+    });
+    return axiosRes.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function spotifyPut(url, { access_token: at }, params, data) {
+  try {
+    const axiosRes = await axios.put(url, data, {
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
+      params,
+    });
+    return axiosRes;
   } catch (err) {
     throw err;
   }
@@ -115,6 +144,7 @@ async function getTop(tokens, type, timeRange) {
 
 function extractArtistData(artist) {
   return {
+    uri: artist.uri,
     id: artist.id,
     name: artist.name,
     spotifyLink: artist.external_urls.spotify,
@@ -168,6 +198,7 @@ function extractTrackData(track) {
   })();
   return {
     id: track.id,
+    uri: track.uri,
     name: track.name,
     spotifyLink: track.external_urls.spotify,
     preview: track.preview_url,
@@ -217,6 +248,69 @@ async function getApiTopTracks(tokens) {
   }
 }
 
+async function getAllPlaylists(uid, tokens) {
+  return spotifyGet(`https://api.spotify.com/v1/users/${uid}/playlists`, tokens);
+}
+
+function extractGenres(artists) {
+  let genres = Object.keys(artists).map((k) => {
+    const artist = artists[k];
+    return artist.genres;
+  });
+
+  genres = [...new Set([].concat(...genres))];
+
+  return genres;
+}
+
+function extractUris(tracks) {
+  return Object.keys(tracks).map(k => tracks[k].uri);
+}
+
+exports.createPlaylist = functions.https.onRequest(async (req, res) => {
+  cors(res);
+  const { uid, playlistName } = req.query;
+  const { tracks } = req.body;
+  if (!tracks) {
+    res.sendStatus(200);
+  } else {
+    const uris = extractUris(tracks);
+    const createUrl = `https://api.spotify.com/v1/users/${uid}/playlists`;
+    try {
+      const tokens = await checkRefresh(uid);
+      const { items: playlists } = await getAllPlaylists(uid, tokens);
+      const exists = playlists.find(playlist => playlist.name === playlistName);
+
+      const populate = async (playlistId) => {
+        const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+        try {
+          const data = await spotifyPut(populateUrl, tokens, {}, {
+            uris,
+          });
+          res.sendStatus(201);
+        } catch (err) {
+          console.error(err);
+          res.status(500).send(err);
+        }
+      };
+
+      if (exists) {
+        const playlistId = exists.id;
+        populate(playlistId);
+      } else {
+        const data = await spotifyPost(createUrl, tokens, {}, {
+          name: playlistName,
+        });
+        const playlistId = data.id;
+        populate(playlistId);
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  }
+});
+
 exports.getTop = functions.https.onRequest(async (req, res) => {
   cors(res);
   const { uid } = req.query;
@@ -224,10 +318,12 @@ exports.getTop = functions.https.onRequest(async (req, res) => {
     const tokens = await checkRefresh(uid);
     const artists = await getApiTopArtists(tokens);
     const tracks = await getApiTopTracks(tokens);
+    const genres = extractGenres(artists);
 
     res.send({
       artists,
       tracks,
+      genres,
     });
   } catch (err) {
     console.error(err);
@@ -330,6 +426,55 @@ exports.getRecs = functions.https.onRequest(async (req, res) => {
     });
 
     res.send({ tracks: allTracks });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
+});
+
+exports.playlistQuiz = functions.https.onRequest(async (req, res) => {
+  cors(res);
+  const { uid, ...ans } = req.query;
+
+  const artistsArrId = [];
+  const tracksArrId = [];
+  const genresArrId = [];
+
+  Object.keys(ans).forEach((k) => {
+    const d = ans[k];
+    const [id, type] = d.split('|');
+
+    if (type === 'genres') genresArrId.push(id);
+    else if (type === 'tracks') tracksArrId.push(id);
+    else artistsArrId.push(id);
+  });
+
+  const aStr = artistsArrId.join(',');
+  const tStr = tracksArrId.join(',');
+  const gStr = decodeURI(genresArrId.join(','));
+
+  try {
+    const tokens = await checkRefresh(uid);
+    const url = 'https://api.spotify.com/v1/recommendations';
+
+    const allTracks = {};
+
+    const extractFromItems = items => items.forEach((t, i) => {
+      const track = allTracks[t.id] || extractTrackData(t);
+      track.pos.rec = i + 1;
+      allTracks[track.id] = track;
+    });
+
+    const { tracks } = await spotifyGet(url, tokens, {
+      seed_artists: aStr,
+      seed_tracks: tStr,
+      seed_genres: gStr,
+      limit: 30,
+    });
+
+    extractFromItems(tracks);
+
+    res.send({ allTracks });
   } catch (err) {
     console.error(err);
     res.status(500).send(err);

@@ -16,6 +16,7 @@ import {
   PrivateRoute,
   TracksDetails,
   ArtistsDetails,
+  Quiz,
 } from './components';
 
 const { Header, Footer } = Layout;
@@ -36,6 +37,7 @@ function App() {
             <PrivateRoute exact path="/" component={Main} />
             <PrivateRoute exact path="/tracks" component={TracksDetails} />
             <PrivateRoute exact path="/artists" component={ArtistsDetails} />
+            <PrivateRoute exact path="/quiz" component={Quiz} />
           </Switch>
           <Footer
             style={{

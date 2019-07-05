@@ -1,0 +1,72 @@
+[
+  {
+    "qs": {
+      "pt": "Quando estou triste, gosto de ouvir:",
+      "en": "When I'm sad, I like to listen to:"
+    },
+    "ansTp": ["tracks", "genres", "artists"]
+  },
+  {
+    "qs": {
+      "pt": "Quando estou feliz, gosto de ouvir:",
+      "en": "When I'm happy, I like to listen to:"
+    },
+    "ansTp": ["tracks", "genres", "artists"]
+  },
+  {
+    "qs": {
+      "pt": "Adoraria ser acordado com a voz de __________ cantando só pra mim",
+      "en": "I'd love to be wake up with his/her voice singing for me"
+    },
+    "ansTp": ["artists"]
+  },
+  {
+    "qs": {
+      "pt": "Uma música ideal para escutar no carro:",
+      "en": "A perfect song to listen while driving:"
+    },
+    "ansTp": ["tracks"]
+  },
+  {
+    "qs": {
+      "pt": "O que te faz relaxar?",
+      "en": "What makes you relax?"
+    },
+    "ansTp": ["tracks", "genres", "artists"]
+  },
+  {
+    "qs": {
+      "pt": "Se você tivesse que escolher um artista/banda para ouvir apenas isso o resto da vida, qual seria?",
+      "en": "If you have to pick one artist/band to listen only it for the rest of your life, which one would be?"
+    },
+    "ansTp": ["artists"]
+  },
+  {
+    "qs": {
+      "pt": "A festa já está no fim, mas é só tocar __________ que eu me animo",
+      "en": "The party is near to end, but if plays __________, I get excited"
+    },
+    "ansTp": ["tracks", "artists", "genres"]
+  },
+  {
+    "qs": {
+      "pt": "A música que descreve meu estado atual:",
+      "en": "The tracks that descripes my actual state:"
+    },
+    "ansTp": ["tracks"]
+  },
+  {
+    "qs": {
+      "pt": "Se um prédio estivesse pegando fogo, quem você salvaria?",
+      "en": "If the building was on fire, who would you save?"
+    },
+    "ansTp": ["artists"]
+  },
+  {
+    "qs": {
+      "pt": "Não viveria sem",
+      "en": "I would not live without"
+    },
+    "ansTp": ["genres"]
+  }
+]

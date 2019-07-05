@@ -49,23 +49,21 @@ class Recommendations extends Component {
       loading,
     } = this.state;
     return (
-      <Row type="flex" gutter={5} style={{ margin: 10 }}>
-        <Col xs={24} xl={12}>
-          <TrackList
-            tracks={rec}
-            type="rec"
-            title={(
-              <Text dicio={{
-                en: 'Recommendations',
-                pt: 'Recomendações',
-              }}
-              />
-            )}
-            loading={loading}
-            pagination={{ pageSize: 5 }}
-          />
-        </Col>
-      </Row>
+      <Col xs={24} xl={12} style={{ marginTop: 10 }}>
+        <TrackList
+          tracks={rec}
+          type="rec"
+          title={(
+            <Text dicio={{
+              en: 'Recommendations',
+              pt: 'Recomendações',
+            }}
+            />
+          )}
+          loading={loading}
+          pagination={{ pageSize: 5 }}
+        />
+      </Col>
     );
   }
 }

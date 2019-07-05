@@ -17,7 +17,7 @@ class TrackList extends Component {
   static propTypes = {
     tracks: PropTypes.array, //eslint-disable-line
     type: PropTypes.string.isRequired,
-    title: PropTypes.object.isRequired, // eslint-disable-line
+    title: PropTypes.oneOfType([ PropTypes.object, PropTypes.string ]).isRequired, // eslint-disable-line
     loading: PropTypes.bool.isRequired,
     pagination: PropTypes.object // eslint-disable-line
   };

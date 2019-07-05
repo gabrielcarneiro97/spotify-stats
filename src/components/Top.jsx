@@ -69,7 +69,7 @@ class Top extends Component {
     const { history } = this.props;
     return (
       <Fragment>
-        <Col xs={24} lg={12}>
+        <Col xs={24} lg={12} style={{ marginTop: 10 }}>
           <Card
             title={(
               <Text
@@ -101,7 +101,7 @@ class Top extends Component {
             </div>
           </Card>
         </Col>
-        <Col xs={24} lg={12}>
+        <Col xs={24} lg={12} style={{ marginTop: 10 }}>
           <Card
             title={(
               <Text
