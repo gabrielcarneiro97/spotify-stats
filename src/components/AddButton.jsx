@@ -90,7 +90,7 @@ class AddButton extends Component {
 
     const select = (
       <Select style={{ width: '100%' }} onChange={this.handleSelectChange}>
-        {playlists.map(p => <Option key={`${p.id}-${track.id}`} value={p.id}>{p.name}</Option>)}
+        {playlists.map(p => <Option disabled={!p.editable} key={`${p.id}-${track.id}`} value={p.id}>{p.name}</Option>)}
       </Select>
     );
     return (
