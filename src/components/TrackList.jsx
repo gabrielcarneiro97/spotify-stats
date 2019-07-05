@@ -8,6 +8,7 @@ import {
 
 import Player from './Player';
 import AddButton from './AddButton';
+import { Text } from './LanguageManager';
 
 import { maxLength } from '../services/string.service';
 
@@ -17,7 +18,7 @@ class TrackList extends Component {
   static propTypes = {
     tracks: PropTypes.array, //eslint-disable-line
     type: PropTypes.string.isRequired,
-    title: PropTypes.oneOfType([ PropTypes.object, PropTypes.string ]).isRequired, // eslint-disable-line
+    title: PropTypes.oneOfType([PropTypes.instanceOf(Text), PropTypes.string ]).isRequired,
     loading: PropTypes.bool.isRequired,
     pagination: PropTypes.object // eslint-disable-line
   };
@@ -86,7 +87,7 @@ class TrackList extends Component {
             </div>
           )}
           renderItem={(track) => {
-            const avatarColor = track.preview ? '#6EFF49' : null;
+            const avatarColor = track.preview ? '#6EFF49' : '';
             return (
               <List.Item
                 key={`${track.id}-${type}`}
