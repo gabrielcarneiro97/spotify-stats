@@ -1,20 +1,19 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   List,
-  Button,
   Card,
 } from 'antd';
 
-import Player from './Player';
-import AddButton from './AddButton';
-import { Text } from './LanguageManager';
+import ReactPlayer from 'react-player';
 
-import { maxLength } from '../services/string.service';
+
 import { getPlaylists } from '../services/api.service';
 
+import TrackListItem from './TrackListItem';
 
-const linkClick = link => () => window.open(link, '_blank');
+
+const inactivePlayer = <ReactPlayer url="" width={0} height={0} volume={0.1} playing={false} />;
 
 class TrackList extends Component {
   static propTypes = {
@@ -28,10 +27,12 @@ class TrackList extends Component {
     pagination: null,
   }
 
+
   state = {
     playingNow: null,
     loading: true,
     playlists: [],
+    player: inactivePlayer,
   };
 
   async componentWillMount() {
@@ -49,29 +50,29 @@ class TrackList extends Component {
   stopMusic = () => {
     const { playingNow } = this.state;
     if (playingNow) {
-      playingNow.setState({ playing: false }, () => {
-        this.setState({ playingNow: null });
-      });
+      playingNow.setState({ playing: false });
+      this.setState({ playingNow: null, player: inactivePlayer });
     }
   }
 
-  handlePlay = (player) => {
+  handlePlay = (player, songUrl) => {
     const { playingNow } = this.state;
     if (playingNow) {
       if (playingNow.props.id === player.props.id) {
+        this.setState();
         playingNow.setState({ playing: false }, () => {
-          this.setState({ playingNow: null });
+          this.setState({ playingNow: null, player: inactivePlayer });
         });
       } else {
         playingNow.setState({ playing: false }, () => {
           player.setState({ playing: true }, () => {
-            this.setState({ playingNow: player });
+            this.setState({ playingNow: player, player: <ReactPlayer url={songUrl} width={0} height={0} volume={0.1} playing /> });
           });
         });
       }
     } else {
       player.setState({ playing: true }, () => {
-        this.setState({ playingNow: player });
+        this.setState({ playingNow: player, player: <ReactPlayer url={songUrl} width={0} height={0} volume={0.1} playing /> });
       });
     }
   }
@@ -86,6 +87,7 @@ class TrackList extends Component {
     const {
       playlists,
       loading: loadingState,
+      player,
     } = this.state;
 
     const loading = ((!tracks) || loadingState);
@@ -97,6 +99,7 @@ class TrackList extends Component {
     };
     return (
       <Card title={title} loading={loading}>
+        {player}
         <List
           size="small"
           pagination={pag}
@@ -106,67 +109,14 @@ class TrackList extends Component {
               <b>STATSFY</b>
             </div>
           )}
-          renderItem={(track) => {
-            const previewAvaible = track.preview ? (
-              <span
-                style={{
-                  color: 'rgba(0,0,0,0.45)',
-                  fontSize: '8px',
-                  verticalAlign: 'text-top',
-                }}
-              >
-                <Text dicio={{
-                  pt: 'PREVIEW DISPONÍVEL!',
-                  en: 'PREVIEW AVAILABLE',
-                }}
-                />
-              </span>
-            ) : '';
-            return (
-              <List.Item
-                key={`${track.id}-${type}`}
-                extra={(
-                  <Player
-                    changePlay={this.handlePlay}
-                    songUrl={track.preview}
-                    imgUrl={track.album.cover}
-                    id={`${track.id}-${type}`}
-                  />
-                )}
-              >
-                <List.Item.Meta
-                  avatar={(
-                    <AddButton text={track.pos[type]} track={track} playlists={playlists} />
-                  )}
-                  title={(
-                    <Fragment>
-                      <Button
-                        type="link"
-                        onClick={linkClick(track.spotifyLink)}
-                        style={{
-                          color: 'rgba(0, 0, 0, 0.85)',
-                          fontWeight: 'bold',
-                          paddingRight: '5px',
-                        }}
-                      >
-                        {maxLength(track.name, 21)}
-                      </Button>
-                      {previewAvaible}
-                    </Fragment>
-                  )}
-                  description={(
-                    <Button
-                      type="link"
-                      style={{ color: 'rgba(0,0,0,0.45)' }}
-                      onClick={linkClick(track.artist.spotifyLink)}
-                    >
-                      {maxLength(track.artist.name)}
-                    </Button>
-                  )}
-                />
-              </List.Item>
-            );
-          }}
+          renderItem={track => (
+            <TrackListItem
+              track={track}
+              playlists={playlists}
+              onPlay={this.handlePlay}
+              id={`${track.id}-${type}`}
+            />
+          )}
         />
       </Card>
     );

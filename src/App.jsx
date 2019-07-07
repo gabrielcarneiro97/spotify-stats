@@ -1,12 +1,12 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import moment from 'moment';
 
 import 'moment/locale/pt-br';
 import 'antd/dist/antd.css';
 
-import { LanguageProvider } from './components/LanguageManager';
+import { LanguageProvider, LanguageSelect } from './components/LanguageManager';
 
 import {
   Login,
@@ -22,6 +22,7 @@ import {
 const { Header, Footer } = Layout;
 
 moment.locale('pt-br');
+
 
 function App() {
   return (
@@ -47,7 +48,14 @@ function App() {
               marginTop: 5,
             }}
           >
-            STATSFY ©2019 Created by Gabriel Carneiro
+            <Row>
+              <Col span={12} style={{ textAlign: 'end' }}>
+                STATSFY ©2019 Created by Gabriel Carneiro
+              </Col>
+              <Col span={12} style={{ textAlign: 'end' }}>
+                <LanguageSelect />
+              </Col>
+            </Row>
           </Footer>
         </Layout>
       </BrowserRouter>

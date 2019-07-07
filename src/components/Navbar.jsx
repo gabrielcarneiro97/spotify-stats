@@ -3,18 +3,19 @@ import { withRouter } from 'react-router-dom';
 import {
   Row,
   Col,
-  Icon,
   Button,
 } from 'antd';
 import PropTypes from 'prop-types';
 
-import { LanguageSelect } from './LanguageManager';
+import './Navbar.css';
+
+import { Text } from './LanguageManager';
 
 import { version } from '../../package.json';
 import { auth } from '../services/auth.service';
 
 function Navbar(props) {
-  const icon = auth().uid ? 'logout' : 'login';
+  const btnText = auth().uid ? <Text dicio={{ pt: 'SAIR', en: 'LOGOUT' }} /> : <Text dicio={{ pt: 'ENTRAR', en: 'LOGIN' }} />;
 
   const handleLogoClick = () => {
     props.history.push('/');
@@ -36,9 +37,8 @@ function Navbar(props) {
         </Button>
       </Col>
       <Col span={12} style={{ textAlign: 'right' }}>
-        <LanguageSelect />
-        <Button type="link" style={{ color: '#FFF' }} onClick={handleLoginBtn}>
-          <Icon type={icon} />
+        <Button type="ghost" onClick={handleLoginBtn} id="login-btn">
+          {btnText}
         </Button>
       </Col>
     </Row>

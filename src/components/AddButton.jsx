@@ -17,9 +17,6 @@ const { Option } = Select;
 
 class AddButton extends Component {
   static propTypes = {
-    text: PropTypes.oneOfType([
-      PropTypes.string, PropTypes.object, PropTypes.number,
-    ]).isRequired,
     track: PropTypes.object.isRequired, // eslint-disable-line
     playlists: PropTypes.array.isRequired // eslint-disable-line
   }
@@ -81,7 +78,7 @@ class AddButton extends Component {
   }
 
   render() {
-    const { text, track, playlists } = this.props;
+    const { track, playlists } = this.props;
     const {
       visible,
       confirmLoading,
@@ -120,9 +117,7 @@ class AddButton extends Component {
             </Row>
           </Card>
         </Modal>
-        <Button shape="circle" onClick={this.showModal}>
-          {text}
-        </Button>
+        <Button shape="circle" onClick={this.showModal} icon="more" size="large" />
       </Fragment>
     );
   }
