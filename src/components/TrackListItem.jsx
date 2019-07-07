@@ -38,7 +38,7 @@ function TrackListItem({
     >
       <Item.Meta
         avatar={(
-          <img alt="cover" src={img} width={64} style={{ borderRadius: '10px' }} />
+          <img alt="cover" src={img} width={48} style={{ borderRadius: '10px' }} />
         )}
         title={(
           <Fragment>
@@ -49,9 +49,10 @@ function TrackListItem({
                 color: 'rgba(0, 0, 0, 0.85)',
                 fontWeight: 'bold',
                 paddingRight: '5px',
+                fontSize: '12px',
               }}
             >
-              {maxLength(track.name, 21)}
+              {maxLength(track.name, track.explicit ? 15 : 18)}
             </Button>
             <Tag
               color="red"
@@ -70,10 +71,13 @@ function TrackListItem({
         description={(
           <Button
             type="link"
-            style={{ color: 'rgba(0,0,0,0.45)' }}
+            style={{
+              color: 'rgba(0,0,0,0.45)',
+              fontSize: '10px',
+            }}
             onClick={linkClick(track.artist.spotifyLink)}
           >
-            {maxLength(track.artist.name, track.explicit ? 15 : 21)}
+            {maxLength(track.artist.name, track.explicit ? 15 : 20)}
           </Button>
         )}
       />

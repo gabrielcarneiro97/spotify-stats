@@ -117,7 +117,7 @@ class AddButton extends Component {
             </Row>
           </Card>
         </Modal>
-        <Button shape="circle" onClick={this.showModal} icon="more" size="large" />
+        <Button shape="circle" onClick={this.showModal} icon="more" size="small" />
       </Fragment>
     );
   }
