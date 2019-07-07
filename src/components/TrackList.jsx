@@ -13,7 +13,11 @@ import { getPlaylists } from '../services/api.service';
 import TrackListItem from './TrackListItem';
 
 
-const inactivePlayer = <ReactPlayer url="" width={0} height={0} volume={0.1} playing={false} />;
+const inactivePlayer = <ReactPlayer url="" width={0} height={0} playing={false} />;
+
+function activePlayer(url, stopMusic) {
+  return <ReactPlayer url={url} width={0} height={0} volume={0.1} playing onEnded={stopMusic} />;
+}
 
 class TrackList extends Component {
   static propTypes = {
@@ -66,13 +70,19 @@ class TrackList extends Component {
       } else {
         playingNow.setState({ playing: false }, () => {
           player.setState({ playing: true }, () => {
-            this.setState({ playingNow: player, player: <ReactPlayer url={songUrl} width={0} height={0} volume={0.1} playing /> });
+            this.setState({
+              playingNow: player,
+              player: activePlayer(songUrl, this.stopMusic),
+            });
           });
         });
       }
     } else {
       player.setState({ playing: true }, () => {
-        this.setState({ playingNow: player, player: <ReactPlayer url={songUrl} width={0} height={0} volume={0.1} playing /> });
+        this.setState({
+          playingNow: player,
+          player: activePlayer(songUrl, this.stopMusic),
+        });
       });
     }
   }

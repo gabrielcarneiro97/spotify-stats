@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   List,
   Button,
+  Tag,
 } from 'antd';
 
 import Player from './Player';
@@ -52,6 +53,18 @@ function TrackListItem({
             >
               {maxLength(track.name, 21)}
             </Button>
+            <Tag
+              color="red"
+              visible={track.explicit}
+              style={{
+                fontSize: '10px',
+                paddingLeft: '2px',
+                paddingRight: '2px',
+                margin: 0,
+              }}
+            >
+              EXPLICIT
+            </Tag>
           </Fragment>
         )}
         description={(
@@ -60,7 +73,7 @@ function TrackListItem({
             style={{ color: 'rgba(0,0,0,0.45)' }}
             onClick={linkClick(track.artist.spotifyLink)}
           >
-            {maxLength(track.artist.name)}
+            {maxLength(track.artist.name, track.explicit ? 15 : 21)}
           </Button>
         )}
       />

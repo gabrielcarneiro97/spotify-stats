@@ -195,6 +195,7 @@ function extractTrackData(track) {
   return {
     id: track.id,
     uri: track.uri,
+    explicit: track.explicit,
     name: track.name,
     spotifyLink: track.external_urls.spotify,
     preview: track.preview_url,
