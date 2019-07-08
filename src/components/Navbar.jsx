@@ -29,9 +29,9 @@ function Navbar(props) {
   };
 
   return (
-    <Row style={{ color: '#FFF' }}>
+    <Row>
       <Col span={12}>
-        <Button type="link" style={{ color: '#FFF' }} onClick={handleLogoClick}>
+        <Button type="link" onClick={handleLogoClick}>
           <span style={{ fontWeight: 'bolder' }}>STATSFY&nbsp;</span>
           <span style={{ fontWeight: 'lighter' }}>{version}</span>
         </Button>

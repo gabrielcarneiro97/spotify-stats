@@ -43,7 +43,6 @@ function TrackListItem({
               onClick={linkClick(track.spotifyLink)}
               style={{
                 fontWeight: 'bold',
-                color: '#E3E3E3',
               }}
             >
               {maxLength(track.name, 25)}
@@ -64,9 +63,6 @@ function TrackListItem({
         description={(
           <Button
             type="link"
-            style={{
-              color: '#E3E3E3',
-            }}
             onClick={linkClick(track.artist.spotifyLink)}
           >
             {maxLength(track.artist.name, 25)}

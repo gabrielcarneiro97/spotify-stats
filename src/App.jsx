@@ -42,8 +42,6 @@ function App() {
           <Footer
             style={{
               textAlign: 'center',
-              backgroundColor: '#001529',
-              color: '#FFF',
               marginTop: 5,
             }}
           >

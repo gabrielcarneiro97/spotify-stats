@@ -9,6 +9,11 @@ module.exports = override(
   }),
   addLessLoader({
     javascriptEnabled: true,
-    modifyVars: darkTheme,
+    modifyVars: {
+      ...darkTheme,
+      '@link-color': '#E3E3E3',
+      '@avatar-bg': '#404041',
+      '@layout-footer-background': '#001529',
+    },
   }),
 );
