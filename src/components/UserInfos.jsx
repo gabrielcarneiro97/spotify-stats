@@ -60,7 +60,7 @@ class UserInfos extends Component {
       return undefined;
     };
     return (
-      <Card>
+      <Card style={{ marginTop: 10 }}>
         <Skeleton loading={loading} avatar active>
           <Meta
             avatar={<Avatar size={64} src={avatar} />}

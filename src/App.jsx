@@ -16,6 +16,7 @@ import {
   TracksDetails,
   ArtistsDetails,
   Quiz,
+  Page404,
 } from './components';
 
 const { Header, Footer } = Layout;
@@ -38,6 +39,7 @@ function App() {
             <PrivateRoute exact path="/tracks" component={TracksDetails} />
             <PrivateRoute exact path="/artists" component={ArtistsDetails} />
             <PrivateRoute exact path="/quiz" component={Quiz} />
+            <Route component={Page404} />
           </Switch>
           <Footer
             style={{
