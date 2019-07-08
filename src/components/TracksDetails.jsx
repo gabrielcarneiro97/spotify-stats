@@ -70,7 +70,7 @@ class TracksDetails extends Component {
     return (
       <Content style={{ minHeight: '92vh' }}>
         <Row type="flex" gutter={5} style={{ margin: 10 }}>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <TrackList
               pagination={{ pageSize: 5 }}
               tracks={short}
@@ -85,7 +85,7 @@ class TracksDetails extends Component {
               loading={loading}
             />
           </Col>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <TrackList
               pagination={{ pageSize: 5 }}
               tracks={medium}
@@ -100,7 +100,7 @@ class TracksDetails extends Component {
               loading={loading}
             />
           </Col>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <TrackList
               pagination={{ pageSize: 5 }}
               tracks={long}

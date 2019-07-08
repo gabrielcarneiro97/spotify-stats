@@ -70,7 +70,7 @@ class ArtistsDetails extends Component {
     return (
       <Content style={{ minHeight: '92vh' }}>
         <Row type="flex" gutter={5} style={{ margin: 10 }}>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <ArtistList
               artists={short}
               pagination={{ pageSize: 5 }}
@@ -85,7 +85,7 @@ class ArtistsDetails extends Component {
               loading={loading}
             />
           </Col>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <ArtistList
               artists={medium}
               pagination={{ pageSize: 5 }}
@@ -100,7 +100,7 @@ class ArtistsDetails extends Component {
               loading={loading}
             />
           </Col>
-          <Col xs={24} xl={8}>
+          <Col xs={24} xl={8} style={{ marginTop: 10 }}>
             <ArtistList
               artists={long}
               pagination={{ pageSize: 5 }}
