@@ -2,9 +2,12 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const axios = require('axios');
 const qs = require('querystring');
-const cors = require('cors')({ origin: true });
+const corsConfig = require('cors');
 
 const { spotify } = require('./private');
+const { root } = require('./public');
+
+const cors = corsConfig({ origin: root });
 
 admin.initializeApp(functions.config().firestore);
 
