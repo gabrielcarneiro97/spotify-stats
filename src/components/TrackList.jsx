@@ -23,12 +23,15 @@ class TrackList extends Component {
   static propTypes = {
     tracks: PropTypes.array, //eslint-disable-line
     type: PropTypes.string.isRequired,
-    title: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
+    title: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    bordered: PropTypes.bool,
     pagination: PropTypes.object // eslint-disable-line
   };
 
   static defaultProps = {
     pagination: null,
+    bordered: true,
+    title: '',
   }
 
 
@@ -93,6 +96,7 @@ class TrackList extends Component {
       type,
       title,
       pagination,
+      bordered,
     } = this.props;
     const {
       playlists,
@@ -100,7 +104,7 @@ class TrackList extends Component {
       player,
     } = this.state;
 
-    const loading = ((!tracks) || loadingState);
+    const loading = (!tracks) || loadingState;
 
     const pag = pagination === null ? null : {
       onChange: this.stopMusic,
@@ -108,17 +112,12 @@ class TrackList extends Component {
       ...pagination,
     };
     return (
-      <Card title={title} loading={loading}>
+      <Card title={title} loading={loading} bordered={bordered}>
         {player}
         <List
           size="small"
           pagination={pag}
           dataSource={tracks}
-          footer={(
-            <div>
-              <b>STATSFY</b>
-            </div>
-          )}
           renderItem={track => (
             <TrackListItem
               track={track}

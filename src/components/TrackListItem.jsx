@@ -43,7 +43,7 @@ function TrackListItem({
                 fontWeight: 'bold',
               }}
             >
-              {maxLength(track.name, 25)}
+              {maxLength(track.name, 30)}
             </Button>
             <Tag
               visible={track.explicit}
@@ -63,7 +63,7 @@ function TrackListItem({
             type="link"
             onClick={linkClick(track.artist.spotifyLink)}
           >
-            {maxLength(track.artist.name, 25)}
+            {maxLength(track.artist.name, 30)}
           </Button>
         )}
       />

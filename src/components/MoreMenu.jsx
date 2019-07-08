@@ -51,7 +51,6 @@ class MoreMenu extends Component {
       <AddButton track={track} playlists={playlists} />,
       <Button
         type="link"
-        size="large"
         onClick={linkClick(track.spotifyLink)}
         icon="export"
       >
@@ -59,7 +58,6 @@ class MoreMenu extends Component {
       </Button>,
       <Button
         type="link"
-        size="large"
         onClick={linkClick(track.artist ? track.artist.spotifyLink : '')}
         icon="user"
       >
@@ -67,7 +65,6 @@ class MoreMenu extends Component {
       </Button>,
       <Button
         type="link"
-        size="large"
         onClick={linkClick(track.album ? track.album.spotifyLink : '')}
         icon="appstore"
       >
@@ -100,7 +97,7 @@ class MoreMenu extends Component {
               </Col>
             </Row>
             <Row type="flex" justify="center" align="top">
-              <Col style={{ textAlign: 'center' }}>
+              <Col style={{ textAlign: 'center', marginTop: '10px' }}>
                 <div style={{ fontWeight: 'bolder' }}>{track.name}</div>
                 <div>{track.artist ? track.artist.name : ''}</div>
               </Col>

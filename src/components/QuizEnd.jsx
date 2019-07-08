@@ -57,7 +57,7 @@ class QuizEnd extends Component {
               <TrackList
                 tracks={rec}
                 type="rec"
-                title="Playlist"
+                bordered={false}
                 loading={loading}
                 pagination={{ pageSize: 5 }}
               />
