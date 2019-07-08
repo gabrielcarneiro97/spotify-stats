@@ -117,7 +117,9 @@ class AddButton extends Component {
             </Row>
           </Card>
         </Modal>
-        <Button shape="circle" onClick={this.showModal} icon="more" size="small" />
+        <Button type="link" onClick={this.showModal} icon="plus" size="large">
+          Adicionar a playlist
+        </Button>
       </Fragment>
     );
   }

@@ -15,6 +15,13 @@ const db = admin.firestore();
 
 const tokensCol = db.collection('tokens');
 
+class Err {
+  constructor(code, desc) {
+    this.code = code;
+    this.description = desc;
+  }
+}
+
 async function token(type, code) {
   const grantType = type === 'code' ? 'authorization_code' : type;
 
@@ -106,7 +113,7 @@ async function saveDBTokens(uid, data) {
 async function checkRefresh(uid) {
   try {
     const tokens = await getDBTokens(uid);
-    if (!tokens) throw new Error('Usuário não encontrado!');
+    if (!tokens) throw new Err(401);
     const date = new Date(tokens.date);
     if (date <= new Date()) {
       try {
@@ -328,6 +335,21 @@ function extractUris(items) {
   return Object.keys(items).map(k => items[k].uri);
 }
 
+function error(err, res) {
+  if (err.code) {
+    if (err.code === '401') {
+      res.cookie('uidStatsfy', '');
+      res.status(401).redirect(`${root}/login`);
+    } else {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  } else {
+    console.error(err);
+    res.status(500).send(err);
+  }
+}
+
 exports.createPlaylist = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     const { uid, playlistName } = req.query;
@@ -344,8 +366,7 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
           await replacePlaylistMusics(playlistId, uris, tokens);
           res.sendStatus(201);
         } catch (err) {
-          console.error(err);
-          res.status(500).send(err);
+          error(err, res);
         }
       };
 
@@ -360,8 +381,7 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
         populate(playlistId);
       }
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -381,8 +401,7 @@ exports.getTop = functions.https.onRequest(async (req, res) => {
         genres,
       });
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -395,8 +414,7 @@ exports.getUser = functions.https.onRequest(async (req, res) => {
       const user = await getApiUser(tokens);
       res.send(user);
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -409,8 +427,7 @@ exports.getPlaylists = functions.https.onRequest(async (req, res) => {
       const playlists = await getApiPlaylists(uid, tokens);
       res.send(playlists);
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -498,8 +515,7 @@ exports.getRecs = functions.https.onRequest(async (req, res) => {
 
       res.send({ tracks: allTracks });
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -563,8 +579,7 @@ exports.playlistQuiz = functions.https.onRequest(async (req, res) => {
 
       res.send({ allTracks });
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });
@@ -580,8 +595,7 @@ exports.spotifyLogin = functions.https.onRequest(async (req, res) => {
 
       res.send(user);
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+      error(err, res);
     }
   });
 });

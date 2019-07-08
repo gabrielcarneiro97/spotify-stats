@@ -8,11 +8,9 @@ import {
 } from 'antd';
 
 import Player from './Player';
-import AddButton from './AddButton';
+import MoreMenu from './MoreMenu';
 
 import { maxLength } from '../services/string.service';
-
-import defaultImg from '../assets/default-cover.png';
 
 const linkClick = link => () => window.open(link, '_blank');
 
@@ -32,7 +30,7 @@ function TrackListItem({
         songUrl={track.preview}
         id={id}
       />), (
-        <AddButton track={track} playlists={playlists} />
+        <MoreMenu track={track} playlists={playlists} />
       )]}
     >
       <Item.Meta
