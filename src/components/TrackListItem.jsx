@@ -24,7 +24,6 @@ function TrackListItem({
   onPlay,
   id,
 }) {
-  const img = track.album.cover || defaultImg;
   return (
     <Item
       key={id}
@@ -37,25 +36,19 @@ function TrackListItem({
       )]}
     >
       <Item.Meta
-        avatar={(
-          <img alt="cover" src={img} width={48} style={{ borderRadius: '10px' }} />
-        )}
         title={(
           <Fragment>
             <Button
               type="link"
               onClick={linkClick(track.spotifyLink)}
               style={{
-                color: 'rgba(0, 0, 0, 0.85)',
                 fontWeight: 'bold',
-                paddingRight: '5px',
-                fontSize: '12px',
+                color: '#E3E3E3',
               }}
             >
-              {maxLength(track.name, track.explicit ? 15 : 18)}
+              {maxLength(track.name, 25)}
             </Button>
             <Tag
-              color="red"
               visible={track.explicit}
               style={{
                 fontSize: '10px',
@@ -72,12 +65,11 @@ function TrackListItem({
           <Button
             type="link"
             style={{
-              color: 'rgba(0,0,0,0.45)',
-              fontSize: '10px',
+              color: '#E3E3E3',
             }}
             onClick={linkClick(track.artist.spotifyLink)}
           >
-            {maxLength(track.artist.name, track.explicit ? 15 : 20)}
+            {maxLength(track.artist.name, 25)}
           </Button>
         )}
       />

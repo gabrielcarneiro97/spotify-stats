@@ -42,13 +42,14 @@ function ArtistList(props) {
               <img
                 src={artist.image}
                 alt="cover"
-                width="64px"
+                width={64}
+                style={{ borderRadius: '15px' }}
               />
             )}
           >
             <List.Item.Meta
               avatar={(
-                <Avatar>
+                <Avatar style={{ backgroundColor: '#171F22' }}>
                   {i + 1}
                   .
                 </Avatar>
@@ -57,7 +58,7 @@ function ArtistList(props) {
                 <Button
                   type="link"
                   onClick={linkClick(artist.spotifyLink)}
-                  style={{ color: 'rgba(0, 0, 0, 0.85)', fontWeight: 'bold' }}
+                  style={{ color: '#E3E3E3', fontWeight: 'bold' }}
                 >
                   {maxLength(artist.name, 21)}
                 </Button>

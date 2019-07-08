@@ -26,11 +26,12 @@ class Player extends Component {
     const { songUrl } = this.props;
     const { playing } = this.state;
 
+    const disabled = !songUrl;
     const icon = playing ? 'pause' : 'caret-right';
 
     return (
       <Fragment>
-        <Button onClick={this.handleClick} shape="circle" icon={icon} disabled={!songUrl} size="large" />
+        <Button type="primary" onClick={this.handleClick} shape="circle" icon={icon} disabled={disabled} size="large" />
       </Fragment>
     );
   }

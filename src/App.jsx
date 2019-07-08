@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import moment from 'moment';
 
 import 'moment/locale/pt-br';
-import 'antd/dist/antd.css';
 
 import { LanguageProvider, LanguageSelect } from './components/LanguageManager';
 

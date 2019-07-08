@@ -29,7 +29,7 @@ function TopChart({ data }) {
         x, y, stroke, // eslint-disable-line
       } = props;
 
-      return <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">{maxLength(musicName, 21)}</text>;
+      return <text x={x} y={y} dy={-4} fill="#E3E3E3" fontSize={10} textAnchor="middle">{maxLength(musicName, 21)}</text>;
     };
     return <Line label={<CustomizedLabel />} type="monotone" key={musicName} dataKey={musicName} stroke={getRandomColor()} />;
   });
