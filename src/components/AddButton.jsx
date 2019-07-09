@@ -119,7 +119,7 @@ class AddButton extends Component {
           </Card>
         </Modal>
         <Button type="link" onClick={this.showModal}>
-          <IconFont type="list-add" />
+          <IconFont type="icon-list-add" />
           &nbsp;
           Adicionar a playlist
         </Button>

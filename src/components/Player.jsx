@@ -29,7 +29,7 @@ class Player extends Component {
     const { playing } = this.state;
 
     const disabled = !songUrl;
-    const icon = playing ? 'pause' : 'play';
+    const icon = playing ? 'icon-pause' : 'icon-play';
 
     return (
       <Fragment>

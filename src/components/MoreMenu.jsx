@@ -53,7 +53,7 @@ class MoreMenu extends Component {
         type="link"
         onClick={linkClick(track.spotifyLink)}
       >
-        <IconFont type="music1" />
+        <IconFont type="icon-music1" />
         &nbsp;
         Ver Música no Spotify
       </Button>,
@@ -61,7 +61,7 @@ class MoreMenu extends Component {
         type="link"
         onClick={linkClick(track.artist ? track.artist.spotifyLink : '')}
       >
-        <IconFont type="user" />
+        <IconFont type="icon-user" />
         &nbsp;
         Ver Artista no Spotify
       </Button>,
@@ -69,7 +69,7 @@ class MoreMenu extends Component {
         type="link"
         onClick={linkClick(track.album ? track.album.spotifyLink : '')}
       >
-        <IconFont type="album" />
+        <IconFont type="icon-album" />
         &nbsp;
         Ver Álbum no Spotify
       </Button>,
@@ -121,7 +121,7 @@ class MoreMenu extends Component {
           </Card>
         </Modal>
         <Button shape="circle" onClick={this.showModal} size="small">
-          <IconFont type="dots-vertical-rounde" />
+          <IconFont type="icon-dots-vertical-rounde" />
         </Button>
       </Fragment>
     );

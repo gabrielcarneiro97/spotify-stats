@@ -4,11 +4,10 @@ import {
   Button,
 } from 'antd';
 import propTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-import { spotifyRedirect } from '../services/auth.service';
 
+import { spotifyRedirect } from '../services/auth.service';
 import { Text } from './LanguageManager';
+import IconFont from './IconFont';
 
 
 import './LoginForm.css';
@@ -37,7 +36,8 @@ class LoginForm extends Component {
       <Form className="login-form">
         <FormItem className="center-text">
           <Button size="large" className="login-form-button" onClick={this.handleSpotify}>
-            <FontAwesomeIcon icon={faSpotify} />
+            <IconFont type="icon-spotify" />
+            &nbsp;
             <span style={{ marginLeft: 5 }}>
               <Text dicio={{
                 pt: 'Entrar com Spotify',

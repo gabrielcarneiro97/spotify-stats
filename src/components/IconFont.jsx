@@ -1,9 +1,12 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 
-import '../assets/iconfont/iconfont.css';
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_1286077_ulyvwlstu1.js',
+});
 
-function IconFont({ type, ...rest }) {
-  return <span {...rest} className={`iconfont icon-${type}`} />;
-}
+IconFont.propTypes = {
+  type: PropTypes.string.isRequired,
+};
 
 export default IconFont;
