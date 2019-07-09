@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 
+import IconFont from './IconFont';
+
 class Player extends Component {
   static propTypes = {
     changePlay: PropTypes.func,
@@ -27,11 +29,13 @@ class Player extends Component {
     const { playing } = this.state;
 
     const disabled = !songUrl;
-    const icon = playing ? 'pause' : 'caret-right';
+    const icon = playing ? 'pause' : 'play';
 
     return (
       <Fragment>
-        <Button type="primary" onClick={this.handleClick} shape="circle" icon={icon} disabled={disabled} size="large" />
+        <Button type="primary" onClick={this.handleClick} shape="circle" disabled={disabled} size="large">
+          <IconFont type={icon} style={{ fontSize: '25px' }} />
+        </Button>
       </Fragment>
     );
   }

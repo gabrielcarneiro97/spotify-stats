@@ -16,6 +16,7 @@ const {
   createPlaylist,
   replacePlaylistMusics,
 } = require('./services/spotifyHttps.service');
+const { getVideoUrl } = require('./services/youtubeHttps.service');
 const { saveDBTokens, checkRefresh } = require('./services/db.service');
 const { extractUris, extractGenres, extractTrackData } = require('./services/dataFilter.service');
 const { error } = require('./services/error.service');
@@ -30,7 +31,7 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
     try {
       const tokens = await checkRefresh(uid);
       const { items: playlists } = await getAllPlaylists(uid, tokens);
-      const exists = playlists.find(playlist => playlist.name === playlistName);
+      const exists = playlists.find(playlist => playlist.name === playlistName && playlist.isOwner);
 
       const populate = async (playlistId) => {
         try {
@@ -268,5 +269,17 @@ exports.spotifyLink = functions.https.onRequest(async (req, res) => {
     const scope = `&scope=${spotify.encodedScopes}`;
 
     res.send(base + clientId + responseType + redirectUri + scope);
+  });
+});
+
+exports.youtubeLink = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { query } = req.query;
+      const url = await getVideoUrl(query);
+      res.send(url);
+    } catch (err) {
+      error(err, res);
+    }
   });
 });

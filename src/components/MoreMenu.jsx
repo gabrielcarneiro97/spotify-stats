@@ -9,11 +9,11 @@ import {
   Col,
 } from 'antd';
 
-
-// import { Text } from './LanguageManager';
 import defaultImg from '../assets/default-cover.png';
 
 import AddButton from './AddButton';
+
+import IconFont from './IconFont';
 
 const linkClick = link => () => window.open(link, '_blank');
 
@@ -52,22 +52,25 @@ class MoreMenu extends Component {
       <Button
         type="link"
         onClick={linkClick(track.spotifyLink)}
-        icon="export"
       >
+        <IconFont type="music1" />
+        &nbsp;
         Ver Música no Spotify
       </Button>,
       <Button
         type="link"
         onClick={linkClick(track.artist ? track.artist.spotifyLink : '')}
-        icon="user"
       >
+        <IconFont type="user" />
+        &nbsp;
         Ver Artista no Spotify
       </Button>,
       <Button
         type="link"
         onClick={linkClick(track.album ? track.album.spotifyLink : '')}
-        icon="appstore"
       >
+        <IconFont type="album" />
+        &nbsp;
         Ver Álbum no Spotify
       </Button>,
     ];
@@ -117,7 +120,9 @@ class MoreMenu extends Component {
             </Row>
           </Card>
         </Modal>
-        <Button shape="circle" onClick={this.showModal} icon="more" size="small" />
+        <Button shape="circle" onClick={this.showModal} size="small">
+          <IconFont type="dots-vertical-rounde" />
+        </Button>
       </Fragment>
     );
   }

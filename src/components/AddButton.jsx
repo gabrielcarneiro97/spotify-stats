@@ -11,6 +11,7 @@ import {
 } from 'antd';
 
 import { Text } from './LanguageManager';
+import IconFont from './IconFont';
 import { addMusic } from '../services/api.service';
 
 const { Option } = Select;
@@ -117,7 +118,9 @@ class AddButton extends Component {
             </Row>
           </Card>
         </Modal>
-        <Button type="link" onClick={this.showModal} icon="plus">
+        <Button type="link" onClick={this.showModal}>
+          <IconFont type="list-add" />
+          &nbsp;
           Adicionar a playlist
         </Button>
       </Fragment>

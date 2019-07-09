@@ -1,6 +1,6 @@
 {
   "name": "spotify-stats",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "dependencies": {
     "@ant-design/dark-theme": "^0.2.2",

@@ -89,3 +89,17 @@ export async function createPlaylist(playlistName, tracks) {
     throw err;
   }
 }
+
+export async function youtubeLink(query) {
+  try {
+    const { data: url } = await axios.get(`${api}/youtubeLink`, {
+      params: {
+        query,
+      },
+    });
+
+    return url;
+  } catch (err) {
+    throw err;
+  }
+}

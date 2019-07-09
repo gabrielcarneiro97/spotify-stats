@@ -26,7 +26,7 @@ class Quiz extends Component {
     const playlistName = nameParam.trim() || 'Meu Quiz Statsfy';
     confirm({
       title: 'Você tem certeza que deseja criar essa playlist?',
-      content: `Após confirmar a playlist "${playlistName}" será criada em seu Spotify com as músicas sugeridas`,
+      content: `Após confirmar a playlist "${playlistName}" será criada em seu Spotify com as músicas sugeridas. ATENÇÃO: CASO VOCÊ JÁ UMA PLAYLIST COM O NOME "${playlistName}" TODAS AS MÚSICAS DA PLAYLIST SERÃO SUBSTITUIDAS!`,
       okText: 'Confirmar',
       cancelText: 'Cancelar',
       async onOk() {
