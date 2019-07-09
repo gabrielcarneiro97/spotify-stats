@@ -1,361 +1,32 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const axios = require('axios');
-const qs = require('querystring');
 const corsConfig = require('cors');
 
 const { spotify } = require('./private');
 const { root } = require('./public');
 
+const { functions } = require('./services/firebase.service');
+const {
+  token,
+  getApiUser,
+  getApiTopArtists,
+  getApiTopTracks,
+  getAllPlaylists,
+  getApiPlaylists,
+  getRecommendations,
+  addMusicsToPlaylist,
+  createPlaylist,
+  replacePlaylistMusics,
+} = require('./services/spotifyHttps.service');
+const { saveDBTokens, checkRefresh } = require('./services/db.service');
+const { extractUris, extractGenres, extractTrackData } = require('./services/dataFilter.service');
+const { error } = require('./services/error.service');
+
 const cors = corsConfig({ origin: root });
-
-admin.initializeApp(functions.config().firestore);
-
-const db = admin.firestore();
-
-const tokensCol = db.collection('tokens');
-
-class Err {
-  constructor(code, desc) {
-    this.code = code;
-    this.description = desc;
-  }
-}
-
-async function token(type, code) {
-  const grantType = type === 'code' ? 'authorization_code' : type;
-
-  const url = 'https://accounts.spotify.com/api/token';
-
-  const queryData = qs.stringify({
-    grant_type: grantType,
-    [type]: code,
-    redirect_uri: spotify.redirectUri,
-  });
-
-  try {
-    const axiosRes = await axios.post(url, queryData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${spotify.clientBase64}`,
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
-    return {
-      ...axiosRes.data,
-      date: new Date(new Date().getTime() + 3600000).toISOString(),
-    };
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function spotifyGet(url, { access_token: at }, params) {
-  try {
-    const axiosRes = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${at}`,
-      },
-      params,
-    });
-    return axiosRes.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function spotifyPost(url, { access_token: at }, params, data) {
-  try {
-    const axiosRes = await axios.post(url, data, {
-      headers: {
-        Authorization: `Bearer ${at}`,
-      },
-      params,
-    });
-    return axiosRes.data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function spotifyPut(url, { access_token: at }, params, data) {
-  try {
-    const axiosRes = await axios.put(url, data, {
-      headers: {
-        Authorization: `Bearer ${at}`,
-      },
-      params,
-    });
-    return axiosRes;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function getDBTokens(uid) {
-  try {
-    const tokens = (await tokensCol.doc(uid).get()).data();
-    return tokens;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function saveDBTokens(uid, data) {
-  try {
-    await tokensCol.doc(uid).set(data);
-    return data;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function checkRefresh(uid) {
-  try {
-    const tokens = await getDBTokens(uid);
-    if (!tokens) throw new Err(401);
-    const date = new Date(tokens.date);
-    if (date <= new Date()) {
-      try {
-        const news = await token('refresh_token', tokens.refresh_token);
-
-        const newsTokens = {
-          ...tokens,
-          ...news,
-        };
-
-        return saveDBTokens(uid, newsTokens);
-      } catch (err) {
-        throw err;
-      }
-    }
-    return tokens;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function getApiUser(tokens) {
-  try {
-    const user = await spotifyGet('https://api.spotify.com/v1/me', tokens);
-    return user;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function getTop(tokens, type, timeRange) {
-  return spotifyGet(`https://api.spotify.com/v1/me/top/${type}`, tokens, { time_range: timeRange });
-}
-
-function extractArtistData(artist) {
-  return {
-    uri: artist.uri,
-    id: artist.id,
-    name: artist.name,
-    spotifyLink: artist.external_urls.spotify,
-    followers: artist.followers.total,
-    popularity: artist.popularity,
-    genres: artist.genres,
-    image: artist.images[0].url,
-    pos: {
-      long: null,
-      medium: null,
-      short: null,
-      rec: null,
-    },
-  };
-}
-
-async function getApiTopArtists(tokens) {
-  try {
-    const allArtists = {};
-    const [long, medium, short] = await Promise.all([
-      getTop(tokens, 'artists', 'long_term'),
-      getTop(tokens, 'artists', 'medium_term'),
-      getTop(tokens, 'artists', 'short_term'),
-    ]);
-    const extractFromItems = (items, time) => items.forEach((a, i) => {
-      const artist = allArtists[a.id] || extractArtistData(a);
-      artist.pos[time] = i + 1;
-      allArtists[artist.id] = artist;
-    });
-
-    extractFromItems(long.items, 'long');
-    extractFromItems(medium.items, 'medium');
-    extractFromItems(short.items, 'short');
-
-    return allArtists;
-  } catch (err) {
-    throw err;
-  }
-}
-
-function extractTrackData(track) {
-  const cover = (() => {
-    if (track.album.images) {
-      if (track.album.images[0]) {
-        if (track.album.images[0].url) return track.album.images[0].url;
-        return null;
-      }
-      return null;
-    }
-    return null;
-  })();
-  return {
-    id: track.id,
-    uri: track.uri,
-    explicit: track.explicit,
-    name: track.name,
-    spotifyLink: track.external_urls.spotify,
-    preview: track.preview_url,
-    popularity: track.popularity,
-    artist: {
-      name: track.artists[0].name,
-      spotifyLink: track.artists[0].external_urls.spotify,
-      id: track.artists[0].id,
-    },
-    album: {
-      name: track.album.name,
-      spotifyLink: track.album.external_urls.spotify,
-      releaseDate: track.album.release_date,
-      cover,
-    },
-    pos: {
-      long: null,
-      medium: null,
-      short: null,
-      rec: null,
-    },
-  };
-}
-
-async function getApiTopTracks(tokens) {
-  try {
-    const allTracks = {};
-    const [long, medium, short] = await Promise.all([
-      getTop(tokens, 'tracks', 'long_term'),
-      getTop(tokens, 'tracks', 'medium_term'),
-      getTop(tokens, 'tracks', 'short_term'),
-    ]);
-
-    const extractFromItems = (items, time) => items.forEach((t, i) => {
-      const track = allTracks[t.id] || extractTrackData(t);
-      track.pos[time] = i + 1;
-      allTracks[track.id] = track;
-    });
-
-    extractFromItems(long.items, 'long');
-    extractFromItems(medium.items, 'medium');
-    extractFromItems(short.items, 'short');
-
-    return allTracks;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function getAllPlaylists(uid, tokens) {
-  return spotifyGet(`https://api.spotify.com/v1/users/${uid}/playlists`, tokens);
-}
-
-function extractPlaylistData(playlist, uid) {
-  const cover = (() => {
-    if (playlist.images) {
-      if (playlist.images.length > 0) {
-        return playlist.images[0].url;
-      }
-      return null;
-    }
-    return null;
-  })();
-
-  const isOwner = playlist.owner.id === uid;
-  const editable = isOwner || playlist.collaborative;
-
-  return {
-    name: playlist.name,
-    id: playlist.id,
-    uri: playlist.uri,
-    cover,
-    editable,
-    isOwner,
-    owner: {
-      id: playlist.owner.id,
-      type: playlist.owner.type,
-    },
-  };
-}
-
-async function getApiPlaylists(uid, tokens) {
-  try {
-    const { items } = await getAllPlaylists(uid, tokens);
-    const playlists = items.map(p => extractPlaylistData(p, uid));
-
-    return playlists;
-  } catch (err) {
-    throw err;
-  }
-}
-
-function extractGenres(artists) {
-  let genres = Object.keys(artists).map((k) => {
-    const artist = artists[k];
-    return artist.genres;
-  });
-
-  genres = [...new Set([].concat(...genres))];
-
-  return genres;
-}
-
-async function addMusicsToPlaylist(playlistId, uris, tokens) {
-  const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-  try {
-    return spotifyPost(populateUrl, tokens, {}, {
-      uris,
-    });
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function replacePlaylistMusics(playlistId, uris, tokens) {
-  const populateUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-  try {
-    return spotifyPut(populateUrl, tokens, {}, {
-      uris,
-    });
-  } catch (err) {
-    throw err;
-  }
-}
-
-function extractUris(items) {
-  return Object.keys(items).map(k => items[k].uri);
-}
-
-function error(err, res) {
-  if (err.code) {
-    if (err.code === '401') {
-      res.cookie('uidStatsfy', '');
-      res.status(401).redirect(`${root}/login`);
-    } else {
-      console.error(err);
-      res.status(500).send(err);
-    }
-  } else {
-    console.error(err);
-    res.status(500).send(err);
-  }
-}
 
 exports.createPlaylist = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     const { uid, playlistName } = req.query;
     const { tracks } = req.body;
     const uris = extractUris(tracks);
-    const createUrl = `https://api.spotify.com/v1/users/${uid}/playlists`;
     try {
       const tokens = await checkRefresh(uid);
       const { items: playlists } = await getAllPlaylists(uid, tokens);
@@ -374,9 +45,7 @@ exports.createPlaylist = functions.https.onRequest(async (req, res) => {
         const playlistId = exists.id;
         populate(playlistId);
       } else {
-        const data = await spotifyPost(createUrl, tokens, {}, {
-          name: playlistName,
-        });
+        const data = await createPlaylist(uid, tokens, playlistName);
         const playlistId = data.id;
         populate(playlistId);
       }
@@ -488,17 +157,13 @@ exports.getRecs = functions.https.onRequest(async (req, res) => {
         }
         reqCount += 1;
       }
-      const url = 'https://api.spotify.com/v1/recommendations';
       const musics = await Promise.all(requests.map(async (r) => {
         const { artists: aIds, tracks: tIds } = r;
-        const aStr = aIds.join(',');
-        const tStr = tIds.join(',');
 
-        return spotifyGet(url, tokens, {
-          seed_artists: aStr,
-          seed_tracks: tStr,
-          limit: 30,
-        });
+        return getRecommendations(tokens, {
+          artists: aIds,
+          tracks: tIds,
+        }, 30);
       }));
 
       const allTracks = {};
@@ -552,13 +217,8 @@ exports.playlistQuiz = functions.https.onRequest(async (req, res) => {
       else artistsArrId.push(id);
     });
 
-    const aStr = artistsArrId.join(',');
-    const tStr = tracksArrId.join(',');
-    const gStr = decodeURI(genresArrId.join(','));
-
     try {
       const tokens = await checkRefresh(uid);
-      const url = 'https://api.spotify.com/v1/recommendations';
 
       const allTracks = {};
 
@@ -568,12 +228,11 @@ exports.playlistQuiz = functions.https.onRequest(async (req, res) => {
         allTracks[track.id] = track;
       });
 
-      const { tracks } = await spotifyGet(url, tokens, {
-        seed_artists: aStr,
-        seed_tracks: tStr,
-        seed_genres: gStr,
-        limit: 30,
-      });
+      const { tracks } = await getRecommendations(tokens, {
+        tracks: tracksArrId,
+        artists: artistsArrId,
+        genres: genresArrId,
+      }, 30);
 
       extractFromItems(tracks);
 

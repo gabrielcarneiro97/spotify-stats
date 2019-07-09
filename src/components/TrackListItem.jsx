@@ -43,7 +43,7 @@ function TrackListItem({
                 fontWeight: 'bold',
               }}
             >
-              {maxLength(track.name, 30)}
+              {maxLength(track.name, track.explicit ? 25 : 30)}
             </Button>
             <Tag
               visible={track.explicit}
