@@ -107,34 +107,45 @@ exports.getRecs = functions.https.onRequest(async (req, res) => {
     const { uid } = req.query;
     try {
       const tokens = await checkRefresh(uid);
-      const artists = await getApiTopArtists(tokens);
-      const tracks = await getApiTopTracks(tokens);
+      const [artists, tracks] = await Promise.all([
+        getApiTopArtists(tokens),
+        getApiTopTracks(tokens),
+      ]);
 
       const longMatches = [1, 3, 7, 17];
       const mediumMatches = [4, 8, 10, 16];
       const shortMatches = [1, 3, 12, 15, 18];
 
-      const topArtistsId = Object.keys(artists).filter((key) => {
-        const artist = artists[key];
-        const { long, medium, short } = artist.pos;
+      const [topArtistsId, topTracksId] = await Promise.all([
+        new Promise((resolve) => {
+          const endArr = Object.keys(artists).filter((key) => {
+            const artist = artists[key];
+            const { long, medium, short } = artist.pos;
 
-        return (
-          longMatches.includes(long)
-          || mediumMatches.includes(medium)
-          || shortMatches.includes(short)
-        );
-      });
+            return (
+              longMatches.includes(long)
+              || mediumMatches.includes(medium)
+              || shortMatches.includes(short)
+            );
+          });
 
-      const topTracksId = Object.keys(tracks).filter((key) => {
-        const track = tracks[key];
-        const { long, medium, short } = track.pos;
+          resolve(endArr);
+        }),
+        new Promise((resolve) => {
+          const endArr = Object.keys(tracks).filter((key) => {
+            const track = tracks[key];
+            const { long, medium, short } = track.pos;
 
-        return (
-          longMatches.includes(long)
-          || mediumMatches.includes(medium)
-          || shortMatches.includes(short)
-        );
-      });
+            return (
+              longMatches.includes(long)
+              || mediumMatches.includes(medium)
+              || shortMatches.includes(short)
+            );
+          });
+
+          resolve(endArr);
+        }),
+      ]);
 
       const requests = [];
       let reqCount = 0;

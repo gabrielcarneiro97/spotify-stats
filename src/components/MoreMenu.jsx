@@ -81,6 +81,7 @@ class MoreMenu extends Component {
           visible={visible}
           onCancel={this.handleCancel}
           footer={null}
+          destroyOnClose
         >
           <Card
             bordered={false}

@@ -3,6 +3,13 @@ import { auth } from './auth.service';
 
 const { api } = require('../public');
 
+const cache = {
+  top: null,
+  user: null,
+  rec: null,
+  playlists: null,
+};
+
 async function get(url) {
   const { uid } = auth();
   try {
@@ -19,19 +26,23 @@ async function get(url) {
 }
 
 export async function getUser() {
-  return get(`${api}/getUser`);
+  if (!cache.user) cache.user = await get(`${api}/getUser`);
+  return cache.user;
 }
 
 export async function getPlaylists() {
-  return get(`${api}/getPlaylists`);
+  if (!cache.playlists) cache.playlists = await get(`${api}/getPlaylists`);
+  return cache.playlists;
 }
 
 export async function getTop() {
-  return get(`${api}/getTop`);
+  if (!cache.top) cache.top = await get(`${api}/getTop`);
+  return cache.top;
 }
 
 export async function getRecs() {
-  return get(`${api}/getRecs`);
+  if (!cache.rec) cache.rec = await get(`${api}/getRecs`);
+  return cache.rec;
 }
 
 export async function getPlaylistQuiz(answers) {
@@ -58,7 +69,6 @@ export async function getPlaylistQuiz(answers) {
 
 export async function addMusic(playlistId, musicUri) {
   const { uid } = auth();
-  console.log('addMusic');
   try {
     const { data } = await axios.put(`${api}/addMusic`, {}, {
       params: {
@@ -67,6 +77,7 @@ export async function addMusic(playlistId, musicUri) {
         musicUri,
       },
     });
+    cache.playlists = null;
     return data;
   } catch (err) {
     throw err;
@@ -84,6 +95,7 @@ export async function createPlaylist(playlistName, tracks) {
       },
     });
 
+    cache.playlists = null;
     return data;
   } catch (err) {
     throw err;
