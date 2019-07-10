@@ -16,7 +16,7 @@ const {
   createPlaylist,
   replacePlaylistMusics,
 } = require('./services/spotifyHttps.service');
-const { getVideoUrl } = require('./services/youtubeHttps.service');
+// const { getVideoUrl } = require('./services/youtubeHttps.service');
 const { saveDBTokens, checkRefresh } = require('./services/db.service');
 const { extractUris, extractGenres, extractTrackData } = require('./services/dataFilter.service');
 const { error } = require('./services/error.service');
@@ -283,14 +283,14 @@ exports.spotifyLink = functions.https.onRequest(async (req, res) => {
   });
 });
 
-exports.youtubeLink = functions.https.onRequest(async (req, res) => {
-  cors(req, res, async () => {
-    try {
-      const { query } = req.query;
-      const url = await getVideoUrl(query);
-      res.send(url);
-    } catch (err) {
-      error(err, res);
-    }
-  });
-});
+// exports.youtubeLink = functions.https.onRequest(async (req, res) => {
+//   cors(req, res, async () => {
+//     try {
+//       const { query } = req.query;
+//       const url = await getVideoUrl(query);
+//       res.send(url);
+//     } catch (err) {
+//       error(err, res);
+//     }
+//   });
+// });

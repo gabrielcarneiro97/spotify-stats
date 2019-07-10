@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, Row, Col } from 'antd';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import moment from 'moment';
 
 import 'moment/locale/pt-br';
@@ -32,15 +33,23 @@ function App() {
           <Header>
             <Navbar />
           </Header>
-          <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/code" component={GetCode} />
-            <PrivateRoute exact path="/" component={Main} />
-            <PrivateRoute exact path="/tracks" component={TracksDetails} />
-            <PrivateRoute exact path="/artists" component={ArtistsDetails} />
-            <PrivateRoute exact path="/quiz" component={Quiz} />
-            <Route component={Page404} />
-          </Switch>
+          <TransitionGroup>
+            <CSSTransition
+              key="css"
+              classNames="fade"
+              timeout={300}
+            >
+              <Switch>
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/code" component={GetCode} />
+                <PrivateRoute exact path="/" component={Main} />
+                <PrivateRoute exact path="/tracks" component={TracksDetails} />
+                <PrivateRoute exact path="/artists" component={ArtistsDetails} />
+                <PrivateRoute exact path="/quiz" component={Quiz} />
+                <Route component={Page404} />
+              </Switch>
+            </CSSTransition>
+          </TransitionGroup>
           <Footer
             style={{
               textAlign: 'center',
