@@ -15,7 +15,7 @@
     "flag-icon-css": "^3.3.0",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "prop-types": "^15.7.2",
     "rc-queue-anim": "^1.6.12",
     "react": "^16.8.6",
